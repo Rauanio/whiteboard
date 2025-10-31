@@ -24,12 +24,15 @@ export const useSelectionWindowViewModel = ({
     return nodesModel.nodes.map((node) => {
       const nodeDimensions = nodesDimensions[node.id];
 
-      const nodeRect = {
-        x: node.x,
-        y: node.y,
-        width: nodeDimensions.width,
-        height: nodeDimensions.height,
-      };
+      const nodeRect =
+        node.type === 'arrow'
+          ? createRectFromPoints(node.start, node.end)
+          : {
+              x: node.x,
+              y: node.y,
+              width: nodeDimensions?.width,
+              height: nodeDimensions?.height,
+            };
 
       return {
         ...node,

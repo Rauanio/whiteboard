@@ -1,5 +1,5 @@
 import { ROUTES } from '../shared/model/routes';
-import { createBrowserRouter, redirect } from 'react-router-dom';
+import { createBrowserRouter, Outlet, redirect } from 'react-router-dom';
 import { App } from './App';
 import { protectedLoader, ProtectedRoute } from './protected-route';
 import { Header } from '@/features/header';
@@ -10,25 +10,32 @@ export const router = createBrowserRouter([
     children: [
       {
         loader: protectedLoader,
-        element: (
-          <>
-            <Header />
-            <ProtectedRoute />
-          </>
-        ),
+        element: <ProtectedRoute />,
         children: [
+          // маршруты с Header
           {
-            path: ROUTES.BOARDS,
-            lazy: () => import('@/features/boards-list/boards-list.page'),
+            element: (
+              <>
+                <Header />
+                <Outlet />
+              </>
+            ),
+            children: [
+              {
+                path: ROUTES.BOARDS,
+                lazy: () => import('@/features/boards-list/boards-list.page'),
+              },
+              {
+                path: ROUTES.FAVORITE_BOARDS,
+                lazy: () => import('@/features/boards-list/boards-list-favorite.page'),
+              },
+              {
+                path: ROUTES.RECENT_BOARDS,
+                lazy: () => import('@/features/boards-list/boards-list-recent.page'),
+              },
+            ],
           },
-          {
-            path: ROUTES.FAVORITE_BOARDS,
-            lazy: () => import('@/features/boards-list/boards-list-favorite.page'),
-          },
-          {
-            path: ROUTES.RECENT_BOARDS,
-            lazy: () => import('@/features/boards-list/boards-list-recent.page'),
-          },
+          // маршрут без Header
           {
             path: ROUTES.BOARD,
             lazy: () => import('@/features/board/board.page'),

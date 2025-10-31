@@ -27,24 +27,25 @@ export function Sticker({
   onMouseUp?: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }) {
   return (
-    <button
-      data-id={id}
-      ref={ref}
-      className={clsx(
-        'absolute bg-yellow-300 px-2 py-4 rounded-xs shadow-md',
-        isSelected && 'outline-2 outline-blue-400'
-      )}
+    <div
       style={{ transform: `translate(${x}px, ${y}px)` }}
-      onClick={onClick}
-      onMouseDown={onMouseDown}
-      onMouseUp={onMouseUp}
+      className={clsx('absolute p-1', isSelected && 'outline-2 outline-blue-400')}
     >
-      <TextareaAutoSize
-        value={text}
-        onChange={onTextChange}
-        isEditing={isEditing ?? false}
-      />
-    </button>
+      <button
+        data-id={id}
+        ref={ref}
+        className={clsx('bg-yellow-300 cursor-move px-2 py-4 rounded-xs shadow-md')}
+        onClick={onClick}
+        onMouseDown={onMouseDown}
+        onMouseUp={onMouseUp}
+      >
+        <TextareaAutoSize
+          value={text}
+          onChange={onTextChange}
+          isEditing={isEditing ?? false}
+        />
+      </button>
+    </div>
   );
 }
 

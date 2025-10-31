@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { Rect } from '../domain/rect';
+import type { Point } from '../domain/point';
 
 interface NodeBase {
   id: string;
@@ -18,7 +19,13 @@ interface RectangleNode extends NodeBase, Rect {
   text: string;
 }
 
-type Node = StickerNode | RectangleNode;
+interface ArrowNode extends NodeBase {
+  type: 'arrow';
+  start: Point;
+  end: Point;
+}
+
+type Node = StickerNode | RectangleNode | ArrowNode;
 
 export const useNodes = () => {
   const [nodes, setNodes] = useState<Node[]>([
@@ -37,6 +44,12 @@ export const useNodes = () => {
       type: 'rectangle',
       x: 300,
       y: 200,
+    },
+    {
+      id: '3',
+      type: 'arrow',
+      start: { x: 100, y: 50 },
+      end: { x: 200, y: 40 },
     },
   ]);
 
@@ -74,24 +87,51 @@ export const useNodes = () => {
     ]);
   };
 
+  const addArrowNode = (data: { start: Point; end: Point }) => {
+    setNodes([
+      ...nodes,
+      {
+        id: crypto.randomUUID(),
+        type: 'arrow',
+        ...data,
+      },
+    ]);
+  };
+
   const deleteNodes = (ids: string[]) => {
     setNodes((prev) => prev.filter((node) => !ids.includes(node.id)));
   };
 
-  const updateNodePosition = (positions: { id: string; x: number; y: number }[]) => {
-    const record = Object.fromEntries(positions.map((p) => [p.id, p]));
+  const updateNodesPositions = (
+    positions: {
+      id: string;
+      point: Point;
+      type?: 'start' | 'end';
+    }[]
+  ) => {
+    const record = Object.fromEntries(
+      positions.map((p) => [`${p.id}${p.type ?? ''}`, p])
+    );
 
-    setNodes((prevNodes) =>
-      prevNodes.map((node) => {
-        const newPosition = record[node.id];
+    setNodes((lastNodes) =>
+      lastNodes.map((node) => {
+        if (node.type === 'arrow') {
+          const newPosition = record[`${node.id}start`];
+          const newEndPosition = record[`${node.id}end`];
 
-        if (newPosition) {
           return {
             ...node,
-            x: newPosition.x,
-            y: newPosition.y,
+            start: newPosition?.point ?? node.start,
+            end: newEndPosition?.point ?? node.end,
           };
         }
+        if (node.type === 'sticker' || node.type === 'rectangle') {
+          const newPosition = record[node.id];
+          if (newPosition) {
+            return { ...node, ...newPosition.point };
+          }
+        }
+
         return node;
       })
     );
@@ -100,10 +140,11 @@ export const useNodes = () => {
   return {
     nodes,
     addStickerNode,
-    updateStickerText,
     addRectangleNode,
+    addArrowNode,
+    updateStickerText,
     deleteNodes,
-    updateNodePosition,
+    updateNodesPositions,
   };
 };
 

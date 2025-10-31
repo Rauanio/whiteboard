@@ -5,8 +5,8 @@ import { useViewModel } from './view-model/view-model';
 import { useWindowEvents } from './hooks/use-window-events';
 import { Canvas } from './ui/canvas';
 import { SelectionWindow } from './ui/selection-window';
-import { Rectangle } from './ui/rectangle';
-import { Sticker } from './ui/sticker';
+import { Rectangle } from './ui/nodes/rectangle';
+import { Sticker } from './ui/nodes/sticker';
 import { Layout } from './ui/layout';
 import { Overlay } from './ui/overlay';
 import { useNodesDimensions } from './hooks/use-nodes-rects';
@@ -14,6 +14,7 @@ import { useWindowPositionModel } from './model/window-position';
 import { Background } from './ui/background/background';
 import { Controls } from './ui/controls/controls';
 import { Actions } from './ui/actions';
+import { Arrow } from './ui/nodes/arrow';
 
 const BoardPage = () => {
   const nodesModel = useNodes();
@@ -39,7 +40,7 @@ const BoardPage = () => {
       ref={layoutFocusRef}
       onKeyDown={viewModel.layout?.onKeyDown}
     >
-      <Background windowPosition={windowPosition} />
+      <Background variant="lines" windowPosition={windowPosition} />
       <Canvas
         overlay={
           <Overlay
@@ -59,7 +60,11 @@ const BoardPage = () => {
           if (node.type === 'rectangle') {
             return <Rectangle key={node.id} ref={nodeRef} {...node} />;
           }
+          if (node.type === 'arrow') {
+            return <Arrow key={node.id} ref={nodeRef} {...node} />;
+          }
         })}
+        {/* <Arrow isSelected start={{ x: 100, y: 50 }} end={{ x: 200, y: 100 }} /> */}
         {viewModel.selectionWindow && <SelectionWindow {...viewModel.selectionWindow} />}
         {viewModel.rectangleWindow && <Rectangle {...viewModel.rectangleWindow} />}
       </Canvas>

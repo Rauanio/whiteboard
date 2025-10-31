@@ -13,7 +13,7 @@ export function Layout({
 } & React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={clsx('grow relative outline-0', className)}
+      className={clsx('grow relative outline-0 cursor-board', className)}
       ref={ref}
       tabIndex={0}
       {...props}

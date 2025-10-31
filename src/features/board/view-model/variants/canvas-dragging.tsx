@@ -2,8 +2,6 @@ import { diffPoints, type Point } from '../../domain/point';
 import { pointOnScreenToCanvas } from '../../domain/screen-to-canvas';
 import type { ViewModelProps } from '../view-model';
 import type { ViewModel } from '../view-model-type';
-import { goToAddRectangle } from './add-rectangle';
-import { goToAddSticker } from './add-sticker';
 import { goToIdle } from './idle';
 
 export interface CanvasDraggingViewState {
@@ -75,20 +73,9 @@ export const useCanvasDraggingViewModel = ({
         },
       },
       actions: {
-        idleState: {
-          isActive: false,
-          onClick: () => setViewState(goToIdle()),
-        },
-        addSticker: {
-          isActive: false,
-          onClick: () => setViewState(goToAddSticker()),
-        },
-        addRectangle: {
-          isActive: false,
-          onClick: () => setViewState(goToAddRectangle()),
-        },
         canvasDragging: {
           isActive: true,
+          onClick: () => setViewState(goToIdle()),
         },
       },
     };

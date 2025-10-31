@@ -3,7 +3,6 @@ import { createRectFromPoints } from '../../domain/rect';
 import { pointOnScreenToCanvas } from '../../domain/screen-to-canvas';
 import type { ViewModelProps } from '../view-model';
 import type { ViewModel } from '../view-model-type';
-import { goToAddSticker } from './add-sticker';
 import { goToIdle } from './idle';
 
 export interface AddRectangleViewState {
@@ -25,11 +24,6 @@ export const useAddRectangleViewModel = ({
       nodes: nodesModel.nodes,
       rectangleWindow: state.start && rect,
       layout: {
-        onKeyDown: (e) => {
-          if (e.key === 'Escape') {
-            setViewState(goToIdle());
-          }
-        },
         cursor: 'cursor-crosshair',
       },
       overlay: {
@@ -78,17 +72,9 @@ export const useAddRectangleViewModel = ({
         },
       },
       actions: {
-        idleState: {
-          isActive: false,
-          onClick: () => setViewState(goToIdle()),
-        },
-        addSticker: {
-          isActive: false,
-          onClick: () => setViewState(goToAddSticker()),
-        },
         addRectangle: {
           isActive: true,
-          onClick: () => setViewState(goToAddRectangle()),
+          onClick: () => setViewState(goToIdle()),
         },
       },
     };

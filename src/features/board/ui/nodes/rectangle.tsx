@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import type { Rect } from '../domain/rect';
+import type { Rect } from '../../domain/rect';
 import type { Ref } from 'react';
 
 export function Rectangle({
@@ -22,21 +22,27 @@ export function Rectangle({
   onMouseUp?: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }) {
   return (
-    <button
-      data-id={id}
-      ref={ref}
-      className={clsx(
-        'absolute inset-0 bg-white rounded-xs border shadow-md border-gray-400',
-        isSelected && 'outline-2 outline-blue-400'
-      )}
+    <div
       style={{
         transform: `translate(${x}px, ${y}px)`,
         width: width,
         height: height,
       }}
-      onClick={onClick}
-      onMouseDown={onMouseDown}
-      onMouseUp={onMouseUp}
-    ></button>
+      className={clsx(
+        'absolute inset-0 bg-transparent p-1',
+        isSelected && 'outline-2 outline-blue-400'
+      )}
+    >
+      <button
+        data-id={id}
+        ref={ref}
+        className={clsx(
+          'rounded-lg bg-white w-full cursor-move h-full border shadow-md border-gray-400'
+        )}
+        onClick={onClick}
+        onMouseDown={onMouseDown}
+        onMouseUp={onMouseUp}
+      ></button>
+    </div>
   );
 }

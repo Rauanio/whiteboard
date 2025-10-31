@@ -1,4 +1,4 @@
-import { diffPoints, type Point } from '../../domain/point';
+import { addPoints, diffPoints, type Point } from '../../domain/point';
 import { pointOnScreenToCanvas } from '../../domain/screen-to-canvas';
 import type { ViewModelProps } from '../view-model';
 import type { ViewModel } from '../view-model-type';
@@ -22,10 +22,18 @@ export const useNodesDraggingViewModel = ({
       if (state.nodesToDrag.has(node.id)) {
         const diff = diffPoints(state.startPoint, state.endPoint);
 
+        if (node.type === 'arrow') {
+          return {
+            ...node,
+            start: addPoints(node.start, diff),
+            end: addPoints(node.end, diff),
+            isSelected: true,
+          };
+        }
+
         return {
           ...node,
-          x: node.x + diff.x,
-          y: node.y + diff.y,
+          ...addPoints(node, diff),
           isSelected: true,
         };
       }
@@ -52,9 +60,36 @@ export const useNodesDraggingViewModel = ({
           });
         },
         onMouseUp: () => {
-          const nodesToDrag = nodes.filter((node) => state.nodesToDrag.has(node.id));
+          const nodesToDrag = nodes
+            .filter((node) => state.nodesToDrag.has(node.id))
+            .flatMap((node) => {
+              if (node.type === 'arrow') {
+                return [
+                  {
+                    id: node.id,
+                    point: node.start,
+                    type: 'start' as const,
+                  },
+                  {
+                    id: node.id,
+                    point: node.end,
+                    type: 'end' as const,
+                  },
+                ];
+              }
 
-          nodesModel.updateNodePosition(nodesToDrag);
+              return [
+                {
+                  id: node.id,
+                  point: {
+                    x: node.x,
+                    y: node.y,
+                  },
+                },
+              ];
+            });
+
+          nodesModel.updateNodesPositions(nodesToDrag);
 
           setViewState(
             goToIdle({

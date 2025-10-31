@@ -1,3 +1,4 @@
+import type { Point } from '../domain/point';
 import type { Rect } from '../domain/rect';
 import type { WindowPosition } from '../model/window-position';
 
@@ -28,7 +29,21 @@ type ViewModelRectangleNode = {
   onMouseUp?: (e: React.MouseEvent<HTMLButtonElement>) => void;
 };
 
-export type ViewModelNode = ViewModelStickerNode | ViewModelRectangleNode;
+type ViewModelArrowNode = {
+  id: string;
+  type: 'arrow';
+  start: Point;
+  end: Point;
+  isSelected?: boolean;
+  onClick?: (e: React.MouseEvent<SVGPathElement>) => void;
+  onMouseDown?: (e: React.MouseEvent<SVGPathElement>) => void;
+  onMouseUp?: (e: React.MouseEvent<SVGPathElement>) => void;
+};
+
+export type ViewModelNode =
+  | ViewModelStickerNode
+  | ViewModelRectangleNode
+  | ViewModelArrowNode;
 
 export interface ViewModel {
   nodes: ViewModelNode[];
@@ -57,6 +72,7 @@ export interface ViewModel {
     idleState?: ViewModelAction;
     addSticker?: ViewModelAction;
     addRectangle?: ViewModelAction;
+    addArrow?: ViewModelAction;
     canvasDragging?: ViewModelAction;
   };
 }

@@ -119,10 +119,18 @@
   }
 }
 
+.cursor-board {
+  cursor: url('/mouse-pointer-2.svg'), auto;
+}
+
 .cursor-sticker {
   cursor: url('/sticky-note.svg'), auto;
 }
 
-/* .cursor-pointer {
-  cursor: url('/pointer.svg'), auto;
-} */
+.cursor-crosshair {
+  cursor: url('/plus.svg'), auto;
+}
+
+.cursor-move {
+  cursor: url('/move.svg'), auto;
+}

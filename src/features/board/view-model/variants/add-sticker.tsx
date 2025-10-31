@@ -1,7 +1,6 @@
 import { pointOnScreenToCanvas } from '../../domain/screen-to-canvas';
 import type { ViewModelProps } from '../view-model';
 import type { ViewModel } from '../view-model-type';
-import { goToAddRectangle } from './add-rectangle';
 import { goToIdle } from './idle';
 
 export interface AddStickerViewState {
@@ -17,18 +16,11 @@ export const useAddStickerViewModel = ({
   return (): ViewModel => ({
     nodes: nodesModel.nodes,
     layout: {
-      onKeyDown: (e) => {
-        if (e.key === 'Escape') {
-          setViewState(goToIdle());
-        }
-      },
       cursor: 'cursor-sticker',
     },
     canvas: {
       onClick: (e) => {
         if (!canvasRect) return;
-
-        console.log(windowPositionModel);
 
         const point = pointOnScreenToCanvas(
           { x: e.clientX, y: e.clientY },
@@ -45,17 +37,9 @@ export const useAddStickerViewModel = ({
       },
     },
     actions: {
-      idleState: {
-        isActive: false,
-        onClick: () => setViewState(goToIdle()),
-      },
       addSticker: {
         isActive: true,
-        onClick: () => setViewState(goToAddSticker()),
-      },
-      addRectangle: {
-        isActive: false,
-        onClick: () => setViewState(goToAddRectangle()),
+        onClick: () => setViewState(goToIdle()),
       },
     },
   });

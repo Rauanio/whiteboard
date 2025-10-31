@@ -8,14 +8,10 @@ export interface EditStickerViewState {
   newText?: string;
 }
 
-export const useEditStickerViewModel = ({
-  nodesModel,
-  //   canvasRect,
-  setViewState,
-}: ViewModelProps) => {
+export const useEditStickerViewModel = ({ nodesModel, setViewState }: ViewModelProps) => {
   return (viewState: EditStickerViewState): ViewModel => ({
     nodes: nodesModel.nodes.map((node) => {
-      if (node.id === viewState.stickerId) {
+      if (node.id === viewState.stickerId && node.type === 'sticker') {
         return {
           ...node,
           isSelected: true,

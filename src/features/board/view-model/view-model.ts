@@ -27,11 +27,14 @@ import {
 } from './variants/canvas-dragging';
 import type { WindowPositionModel } from '../model/window-position';
 import { useZoomDecorator } from './decorators/zoom';
+import { useActionsDecorator } from './decorators/actions';
+import { useAddArrowViewModel, type AddArrowViewState } from './variants/add-arrow';
 
 type ViewState =
   | IdleViewState
   | AddStickerViewState
   | AddRectangleViewState
+  | AddArrowViewState
   | EditStickerViewState
   | SelectionWindowViewState
   | NodesDraggingViewState
@@ -55,11 +58,13 @@ export const useViewModel = (props: Omit<ViewModelProps, 'setViewState'>) => {
 
   const idleViewModel = useIdleViewModel(newProps);
   const addStickerViewModel = useAddStickerViewModel(newProps);
+  const addArrowViewModel = useAddArrowViewModel(newProps);
   const editStickerViewModel = useEditStickerViewModel(newProps);
   const addRectangleViewModel = useAddRectangleViewModel(newProps);
   const selectionWindowViewModel = useSelectionWindowViewModel(newProps);
   const nodesDraggingViewModel = useNodesDraggingViewModel(newProps);
   const canvasDraggingViewModel = useCanvasDraggingViewModel(newProps);
+  const actionsDecorator = useActionsDecorator(newProps);
 
   const zoomDecorator = useZoomDecorator(newProps);
 
@@ -67,16 +72,19 @@ export const useViewModel = (props: Omit<ViewModelProps, 'setViewState'>) => {
 
   switch (viewState.type) {
     case 'idle':
-      viewModel = idleViewModel(viewState);
+      viewModel = actionsDecorator(idleViewModel(viewState));
       break;
     case 'add-sticker':
-      viewModel = addStickerViewModel();
+      viewModel = actionsDecorator(addStickerViewModel());
       break;
     case 'edit-sticker':
       viewModel = editStickerViewModel(viewState);
       break;
     case 'add-rectangle':
-      viewModel = addRectangleViewModel(viewState);
+      viewModel = actionsDecorator(addRectangleViewModel(viewState));
+      break;
+    case 'add-arrow':
+      viewModel = actionsDecorator(addArrowViewModel(viewState));
       break;
     case 'selection-window':
       viewModel = selectionWindowViewModel(viewState);
@@ -85,7 +93,7 @@ export const useViewModel = (props: Omit<ViewModelProps, 'setViewState'>) => {
       viewModel = nodesDraggingViewModel(viewState);
       break;
     case 'canvas-dragging':
-      viewModel = canvasDraggingViewModel(viewState);
+      viewModel = actionsDecorator(canvasDraggingViewModel(viewState));
       break;
     default:
       throw new Error('View model is not found');

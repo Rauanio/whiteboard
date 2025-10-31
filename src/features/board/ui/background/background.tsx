@@ -6,7 +6,7 @@ import type { BackgroundProps } from './types';
 const BackgroundComponent = ({
   windowPosition,
   variant = 'dots',
-  gap = 20,
+  gap = 40,
   size = 1,
   lineWidth = 1,
   color = '#e5e7eb',
