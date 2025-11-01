@@ -1,4 +1,4 @@
-import { addPoints, diffPoints, type Point } from '../../domain/point';
+import { addPoints, diffPoints, isRelativePoint, type Point } from '../../domain/point';
 import { pointOnScreenToCanvas } from '../../domain/screen-to-canvas';
 import type { ViewModelProps } from '../view-model';
 import type { ViewModel } from '../view-model-type';
@@ -25,8 +25,8 @@ export const useNodesDraggingViewModel = ({
         if (node.type === 'arrow') {
           return {
             ...node,
-            start: addPoints(node.start, diff),
-            end: addPoints(node.end, diff),
+            start: isRelativePoint(node.start) ? node.start : addPoints(node.start, diff),
+            end: isRelativePoint(node.end) ? node.end : addPoints(node.end, diff),
             isSelected: true,
           };
         }

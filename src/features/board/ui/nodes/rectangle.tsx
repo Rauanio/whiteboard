@@ -1,6 +1,7 @@
 import clsx from 'clsx';
 import type { Rect } from '../../domain/rect';
 import type { Ref } from 'react';
+import { SelectionBox } from '../selection-box';
 
 export function Rectangle({
   height,
@@ -22,17 +23,7 @@ export function Rectangle({
   onMouseUp?: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }) {
   return (
-    <div
-      style={{
-        transform: `translate(${x}px, ${y}px)`,
-        width: width,
-        height: height,
-      }}
-      className={clsx(
-        'absolute inset-0 bg-transparent p-1',
-        isSelected && 'outline-2 outline-blue-400'
-      )}
-    >
+    <SelectionBox height={height} width={width} isSelected={isSelected} x={x} y={y}>
       <button
         data-id={id}
         ref={ref}
@@ -43,6 +34,6 @@ export function Rectangle({
         onMouseDown={onMouseDown}
         onMouseUp={onMouseUp}
       ></button>
-    </div>
+    </SelectionBox>
   );
 }

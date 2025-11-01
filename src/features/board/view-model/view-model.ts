@@ -29,6 +29,7 @@ import type { WindowPositionModel } from '../model/window-position';
 import { useZoomDecorator } from './decorators/zoom';
 import { useActionsDecorator } from './decorators/actions';
 import { useAddArrowViewModel, type AddArrowViewState } from './variants/add-arrow';
+import { useResolveRelativeStaticDecorator } from './decorators/resolve-relative';
 
 type ViewState =
   | IdleViewState
@@ -65,7 +66,6 @@ export const useViewModel = (props: Omit<ViewModelProps, 'setViewState'>) => {
   const nodesDraggingViewModel = useNodesDraggingViewModel(newProps);
   const canvasDraggingViewModel = useCanvasDraggingViewModel(newProps);
   const actionsDecorator = useActionsDecorator(newProps);
-
   const zoomDecorator = useZoomDecorator(newProps);
 
   let viewModel: ViewModel;
@@ -99,5 +99,8 @@ export const useViewModel = (props: Omit<ViewModelProps, 'setViewState'>) => {
       throw new Error('View model is not found');
   }
 
-  return zoomDecorator(viewModel);
+  viewModel = useResolveRelativeStaticDecorator(viewModel);
+  viewModel = zoomDecorator(viewModel);
+
+  return viewModel;
 };

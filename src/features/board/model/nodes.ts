@@ -1,6 +1,6 @@
-import { useState } from 'react';
 import type { Rect } from '../domain/rect';
-import type { Point } from '../domain/point';
+import { type Point } from '../domain/point';
+import { useStateHistory } from './history';
 
 interface NodeBase {
   id: string;
@@ -16,7 +16,6 @@ interface StickerNode extends NodeBase {
 
 interface RectangleNode extends NodeBase, Rect {
   type: 'rectangle';
-  text: string;
 }
 
 interface ArrowNode extends NodeBase {
@@ -25,33 +24,17 @@ interface ArrowNode extends NodeBase {
   end: Point;
 }
 
-type Node = StickerNode | RectangleNode | ArrowNode;
+export type Node = StickerNode | RectangleNode | ArrowNode;
 
 export const useNodes = () => {
-  const [nodes, setNodes] = useState<Node[]>([
-    {
-      id: '1',
-      text: 'default',
-      x: 100,
-      y: 200,
-      type: 'sticker',
-    },
-    {
-      id: '2',
-      text: '',
-      width: 100,
-      height: 100,
-      type: 'rectangle',
-      x: 300,
-      y: 200,
-    },
-    {
-      id: '3',
-      type: 'arrow',
-      start: { x: 100, y: 50 },
-      end: { x: 200, y: 40 },
-    },
-  ]);
+  const {
+    state: nodes,
+    set: setNodes,
+    undo,
+    redo,
+    canRedo,
+    canUndo,
+  } = useStateHistory<Node[]>([]);
 
   const addStickerNode = (data: { text: string; x: number; y: number }) => {
     setNodes([
@@ -99,7 +82,23 @@ export const useNodes = () => {
   };
 
   const deleteNodes = (ids: string[]) => {
-    setNodes((prev) => prev.filter((node) => !ids.includes(node.id)));
+    setNodes((prev) => {
+      const arrowRelativeIds = prev
+        .filter(
+          (node) =>
+            (node.type === 'arrow' &&
+              node.start.relativeTo &&
+              ids.includes(node.start.relativeTo)) ||
+            (node.type == 'arrow' &&
+              node.end.relativeTo &&
+              ids.includes(node.end.relativeTo))
+        )
+        .map((node) => node.id);
+
+      return prev.filter(
+        (node) => !ids.includes(node.id) && !arrowRelativeIds.includes(node.id)
+      );
+    });
   };
 
   const updateNodesPositions = (
@@ -145,6 +144,10 @@ export const useNodes = () => {
     updateStickerText,
     deleteNodes,
     updateNodesPositions,
+    undo,
+    redo,
+    canRedo,
+    canUndo,
   };
 };
 

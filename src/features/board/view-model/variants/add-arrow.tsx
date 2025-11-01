@@ -1,14 +1,17 @@
 import type React from 'react';
-import { type Point } from '../../domain/point';
+import { diffPoints, type Point } from '../../domain/point';
 import { pointOnScreenToCanvas } from '../../domain/screen-to-canvas';
 import type { ViewModelProps } from '../view-model';
 import type { ViewModel } from '../view-model-type';
 import { goToIdle } from './idle';
+import { createRelativeBase } from '../decorators/resolve-relative';
 
 export interface AddArrowViewState {
   type: 'add-arrow';
   start?: Point;
   end?: Point;
+  startRelativeTo?: string;
+  endRelativeTo?: string;
 }
 
 export const useAddArrowViewModel = ({
@@ -18,7 +21,36 @@ export const useAddArrowViewModel = ({
   windowPositionModel,
 }: ViewModelProps) => {
   return (state: AddArrowViewState): ViewModel => {
-    const setStartPoint = (e: React.MouseEvent) => {
+    const addArrow = (
+      state: AddArrowViewState,
+      defaultPoints: {
+        start: Point;
+        end: Point;
+      },
+      endRelativeTo?: string
+    ) => {
+      const relativeBase = createRelativeBase(nodesModel.nodes);
+
+      const newArrow = {
+        start:
+          state.startRelativeTo && state.start
+            ? {
+                ...diffPoints(relativeBase[state.startRelativeTo], state.start),
+                relativeTo: state.startRelativeTo,
+              }
+            : state.start ?? defaultPoints.start,
+        end:
+          endRelativeTo && state.end
+            ? {
+                ...diffPoints(relativeBase[endRelativeTo], state.end),
+                relativeTo: endRelativeTo,
+              }
+            : state.end ?? defaultPoints.end,
+      };
+      nodesModel.addArrowNode(newArrow);
+    };
+
+    const setStartPoint = (e: React.MouseEvent, startRelativeTo?: string) => {
       setViewState({
         ...state,
         start: pointOnScreenToCanvas(
@@ -29,6 +61,7 @@ export const useAddArrowViewModel = ({
           windowPositionModel.position,
           canvasRect
         ),
+        startRelativeTo,
       });
     };
 
@@ -40,6 +73,7 @@ export const useAddArrowViewModel = ({
             type: 'arrow' as const,
             start: state.start,
             end: state.end ?? state.start,
+            noPointerEvents: true,
           },
         ]
       : nodesModel.nodes;
@@ -50,7 +84,19 @@ export const useAddArrowViewModel = ({
           return {
             ...node,
             onMouseDown: (e: React.MouseEvent) => {
-              setStartPoint(e);
+              setStartPoint(e, node.id);
+            },
+            onMouseUp: (e: React.MouseEvent) => {
+              console.log('onMouseUp in sticker');
+
+              addArrow(
+                state,
+                {
+                  end: { x: e.clientX, y: e.clientY },
+                  start: { x: e.clientX, y: e.clientY },
+                },
+                node.id
+              );
             },
           };
         }
@@ -63,6 +109,13 @@ export const useAddArrowViewModel = ({
       overlay: {
         onMouseDown: (e) => {
           setStartPoint(e);
+        },
+        onMouseUp: (e) => {
+          console.log('onMouseUp on overlay');
+          addArrow(state, {
+            end: { x: e.clientX, y: e.clientY },
+            start: { x: e.clientX, y: e.clientY },
+          });
         },
       },
       window: {
@@ -83,13 +136,7 @@ export const useAddArrowViewModel = ({
             });
           }
         },
-        onMouseUp: (e) => {
-          if (state.start) {
-            nodesModel.addArrowNode({
-              end: state.end ?? { x: e.clientX, y: e.clientY },
-              start: state.start ?? { x: e.clientX, y: e.clientY },
-            });
-          }
+        onMouseUp: () => {
           setViewState(goToIdle());
         },
       },
@@ -105,12 +152,15 @@ export const useAddArrowViewModel = ({
 
 export const goToAddArrow = ({
   start,
+  startRelativeTo,
 }: {
   start?: Point;
+  startRelativeTo?: string;
 } = {}): AddArrowViewState => {
   return {
     type: 'add-arrow',
     start,
     end: start,
+    startRelativeTo,
   };
 };

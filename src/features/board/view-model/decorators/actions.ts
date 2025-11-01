@@ -12,20 +12,19 @@ export const useActionsDecorator = ({ setViewState }: ViewModelProps) => {
     layout: {
       ...viewModel.layout,
       onKeyDown: (e) => {
-        if (e.key === 'Escape') {
+        if (e.key === 'Escape' || e.key === '1') {
           setViewState(goToIdle());
         }
-        if (e.key === 's') {
-          setViewState(goToAddSticker());
-        }
-
-        if (e.key === 'r') {
-          setViewState(goToAddRectangle());
-        }
-        if (e.key === 'h') {
+        if (e.key === 'h' || e.key === '2') {
           setViewState(goToCanvasDragging());
         }
-        if (e.key === 'a') {
+        if (e.key === 's' || e.key === '3') {
+          setViewState(goToAddSticker());
+        }
+        if (e.key === 'r' || e.key === '4') {
+          setViewState(goToAddRectangle());
+        }
+        if (e.key === 'a' || e.key === '7') {
           setViewState(goToAddArrow());
         }
         viewModel.layout?.onKeyDown?.(e);

@@ -5,13 +5,13 @@ export const ControlButton = ({
   children,
   onClick,
   size = 'icon',
-}: {
-  children: React.ReactNode;
-  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
-  size?: VariantProps<typeof buttonVariants>['size'];
-}) => {
+  ...props
+}: React.ComponentProps<'button'> &
+  VariantProps<typeof buttonVariants> & {
+    asChild?: boolean;
+  }) => {
   return (
-    <Button onClick={onClick} variant="ghost" size={size}>
+    <Button onClick={onClick} variant="ghost" size={size} {...props}>
       {children}
     </Button>
   );

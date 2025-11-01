@@ -12,9 +12,10 @@ import { Overlay } from './ui/overlay';
 import { useNodesDimensions } from './hooks/use-nodes-rects';
 import { useWindowPositionModel } from './model/window-position';
 import { Background } from './ui/background/background';
-import { Controls } from './ui/controls/controls';
 import { Actions } from './ui/actions';
 import { Arrow } from './ui/nodes/arrow';
+import { HistoryControls } from './ui/controls/history-controls';
+import { ZoomControls } from './ui/controls/zoom-controls';
 
 const BoardPage = () => {
   const nodesModel = useNodes();
@@ -64,13 +65,20 @@ const BoardPage = () => {
             return <Arrow key={node.id} ref={nodeRef} {...node} />;
           }
         })}
-        {/* <Arrow isSelected start={{ x: 100, y: 50 }} end={{ x: 200, y: 100 }} /> */}
         {viewModel.selectionWindow && <SelectionWindow {...viewModel.selectionWindow} />}
         {viewModel.rectangleWindow && <Rectangle {...viewModel.rectangleWindow} />}
       </Canvas>
 
       <Actions actions={viewModel.actions} />
-      <Controls canvasRect={canvasRect} windowPositionModel={windowPositionModel} />
+      <div className="absolute bottom-4 right-4 flex gap-3">
+        <HistoryControls
+          undo={nodesModel.undo}
+          redo={nodesModel.redo}
+          canUndo={nodesModel.canUndo}
+          canRedo={nodesModel.canRedo}
+        />
+        <ZoomControls canvasRect={canvasRect} windowPositionModel={windowPositionModel} />
+      </div>
     </Layout>
   );
 };

@@ -1,7 +1,8 @@
-import { Maximize2, Minimize2, MinusIcon, PlusIcon, ZoomIn } from 'lucide-react';
-import { ControlButton } from './control-button';
+import { useState } from 'react';
 import type { WindowPositionModel } from '../../model/window-position';
 import type { CanvasRect } from '../../hooks/use-canvas-rect';
+import { Maximize2, Minimize2, MinusIcon, PlusIcon, ZoomIn } from 'lucide-react';
+import { ControlButton } from './control-button';
 import { pointOnScreenToCanvas } from '../../domain/screen-to-canvas';
 import { diffPoints } from '../../domain/point';
 import {
@@ -11,13 +12,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/shared/ui/kit/dropdown-menu';
-import { useState } from 'react';
 
 const dropdownItems = [50, 70, 100, 150, 200];
 
-export const Controls = ({
-  windowPositionModel,
+export const ZoomControls = ({
   canvasRect,
+  windowPositionModel,
 }: {
   windowPositionModel: WindowPositionModel;
   canvasRect: CanvasRect | undefined;
@@ -71,6 +71,8 @@ export const Controls = ({
 
   const onZoomOut = () => zoom({ scale: 0.9 });
 
+  console.log(zoomPercentage);
+
   const toggleFullscreen = () => {
     if (!document.fullscreenElement) {
       document.documentElement.requestFullscreen().then(() => {
@@ -84,8 +86,8 @@ export const Controls = ({
   };
 
   return (
-    <div className="absolute shadow bg-white bottom-4 right-4 p-1 flex rounded-md">
-      <ControlButton onClick={onZoomOut}>
+    <div className="shadow-md bg-white p-1 flex items-center rounded-md">
+      <ControlButton disabled={zoomPercentage <= 10} onClick={onZoomOut}>
         <MinusIcon />
       </ControlButton>
       <DropdownMenu>
@@ -105,7 +107,7 @@ export const Controls = ({
           ))}
         </DropdownMenuContent>
       </DropdownMenu>
-      <ControlButton onClick={onZoomIn}>
+      <ControlButton disabled={zoomPercentage >= 500} onClick={onZoomIn}>
         <PlusIcon />
       </ControlButton>
     </div>

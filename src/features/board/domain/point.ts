@@ -1,7 +1,14 @@
 export interface Point {
   x: number;
   y: number;
+  relativeTo?: string;
 }
+
+export type RelativePoint = Point & {
+  relativeTo: string;
+};
+
+export type RelativeBase = Record<string, Point>;
 
 export function diffPoints(point1: Point, point2: Point) {
   return {
@@ -19,4 +26,25 @@ export function addPoints(point1: Point, point2: Point) {
     x: point1.x + point2.x,
     y: point1.y + point2.y,
   };
+}
+
+export function resolveRelativePoint(base: RelativeBase, point: Point): Point {
+  let relativeTo = point.relativeTo
+  let newPoint = point
+
+  while(relativeTo) {
+    const basePoint = base[relativeTo]
+
+    if(basePoint) {
+      newPoint = addPoints(newPoint, basePoint)
+    }
+
+    relativeTo = basePoint?.relativeTo
+  }
+
+  return newPoint
+}
+
+export function isRelativePoint(point: Point): point is RelativePoint {
+  return "relativeTo" in point;
 }

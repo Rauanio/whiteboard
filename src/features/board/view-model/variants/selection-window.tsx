@@ -1,7 +1,8 @@
-import type { Point } from '../../domain/point';
+import { resolveRelativePoint, type Point } from '../../domain/point';
 import { createRectFromPoints, isRectsIntersecting, type Rect } from '../../domain/rect';
 import { pointOnScreenToCanvas } from '../../domain/screen-to-canvas';
 import { selectNodes, type Selection } from '../../domain/selection';
+import { createRelativeBase } from '../decorators/resolve-relative';
 import type { ViewModelProps } from '../view-model';
 import type { ViewModel } from '../view-model-type';
 import { goToIdle } from './idle';
@@ -21,12 +22,17 @@ export const useSelectionWindowViewModel = ({
   windowPositionModel,
 }: ViewModelProps) => {
   const getNodes = (state: SelectionWindowViewState, selectionRect: Rect) => {
+    const relativeBase = createRelativeBase(nodesModel.nodes);
+
     return nodesModel.nodes.map((node) => {
       const nodeDimensions = nodesDimensions[node.id];
 
       const nodeRect =
         node.type === 'arrow'
-          ? createRectFromPoints(node.start, node.end)
+          ? createRectFromPoints(
+              resolveRelativePoint(relativeBase, node.start),
+              resolveRelativePoint(relativeBase, node.end)
+            )
           : {
               x: node.x,
               y: node.y,

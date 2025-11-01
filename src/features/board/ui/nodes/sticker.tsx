@@ -1,5 +1,6 @@
 import clsx from 'clsx';
 import { useEffect, useLayoutEffect, useRef, useState, type Ref } from 'react';
+import { SelectionBox } from '../selection-box';
 
 export function Sticker({
   id,
@@ -27,14 +28,11 @@ export function Sticker({
   onMouseUp?: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }) {
   return (
-    <div
-      style={{ transform: `translate(${x}px, ${y}px)` }}
-      className={clsx('absolute p-1', isSelected && 'outline-2 outline-blue-400')}
-    >
+    <SelectionBox x={x} y={y} isSelected={isSelected}>
       <button
         data-id={id}
         ref={ref}
-        className={clsx('bg-yellow-300 cursor-move px-2 py-4 rounded-xs shadow-md')}
+        className={clsx(' bg-yellow-300 cursor-move px-2 py-4 rounded-xs shadow-md')}
         onClick={onClick}
         onMouseDown={onMouseDown}
         onMouseUp={onMouseUp}
@@ -45,7 +43,7 @@ export function Sticker({
           isEditing={isEditing ?? false}
         />
       </button>
-    </div>
+    </SelectionBox>
   );
 }
 

@@ -7,6 +7,7 @@ export const Arrow = ({
   end,
   ref,
   isSelected,
+  noPointerEvents,
   onClick,
   onMouseDown,
   onMouseUp,
@@ -15,6 +16,7 @@ export const Arrow = ({
   end: Point;
   ref: Ref<SVGPathElement>;
   isSelected?: boolean;
+  noPointerEvents?: boolean;
   onClick?: (e: React.MouseEvent<SVGPathElement>) => void;
   onMouseDown?: (e: React.MouseEvent<SVGPathElement>) => void;
   onMouseUp?: (e: React.MouseEvent<SVGPathElement>) => void;
@@ -31,8 +33,9 @@ export const Arrow = ({
       <path
         ref={ref}
         className={clsx(
-          'pointer-events-auto cursor-move',
-          isSelected && 'outline-2 outline-blue-400 '
+          ' cursor-move',
+          isSelected && 'outline-2 outline-blue-400 ',
+          noPointerEvents ? 'pointer-events-none' : 'pointer-events-auto'
         )}
         stroke="black"
         strokeWidth={2}
