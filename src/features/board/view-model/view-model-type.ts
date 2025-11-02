@@ -1,12 +1,15 @@
 import type { Point } from '../domain/point';
 import type { Rect } from '../domain/rect';
 import type { WindowPosition } from '../model/window-position';
+import type { ResizeDirection } from '../ui/resizable-box';
 
 interface ViewModelStickerNode {
   id: string;
   type: 'sticker';
   x: number;
   y: number;
+  width: number;
+  height: number;
   text: string;
   isSelected?: boolean;
   isEditing?: boolean;
@@ -26,6 +29,7 @@ type ViewModelRectangleNode = {
   isSelected?: boolean;
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   onMouseDown?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  onHandleMouseDown?: (e: React.MouseEvent<HTMLDivElement>, dir: ResizeDirection) => void;
   onMouseUp?: (e: React.MouseEvent<HTMLButtonElement>) => void;
 };
 

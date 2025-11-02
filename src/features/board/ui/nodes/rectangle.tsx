@@ -2,6 +2,7 @@ import clsx from 'clsx';
 import type { Rect } from '../../domain/rect';
 import type { Ref } from 'react';
 import { SelectionBox } from '../selection-box';
+import { ResizableBox, type ResizeDirection } from '../resizable-box';
 
 export function Rectangle({
   height,
@@ -13,6 +14,7 @@ export function Rectangle({
   id,
   onClick,
   onMouseDown,
+  onHandleMouseDown,
   onMouseUp,
 }: Rect & {
   id?: string;
@@ -20,10 +22,12 @@ export function Rectangle({
   ref?: Ref<HTMLButtonElement>;
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   onMouseDown?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  onHandleMouseDown?: (e: React.MouseEvent<HTMLDivElement>, dir: ResizeDirection) => void;
   onMouseUp?: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }) {
   return (
     <SelectionBox height={height} width={width} isSelected={isSelected} x={x} y={y}>
+      {isSelected && <ResizableBox onMouseDown={onHandleMouseDown} />}
       <button
         data-id={id}
         ref={ref}

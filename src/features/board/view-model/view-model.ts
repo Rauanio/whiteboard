@@ -30,6 +30,10 @@ import { useZoomDecorator } from './decorators/zoom';
 import { useActionsDecorator } from './decorators/actions';
 import { useAddArrowViewModel, type AddArrowViewState } from './variants/add-arrow';
 import { useResolveRelativeStaticDecorator } from './decorators/resolve-relative';
+import {
+  useNodesResizingViewModel,
+  type NodesResizingViewState,
+} from './variants/nodes-resizing';
 
 type ViewState =
   | IdleViewState
@@ -37,6 +41,7 @@ type ViewState =
   | AddRectangleViewState
   | AddArrowViewState
   | EditStickerViewState
+  | NodesResizingViewState
   | SelectionWindowViewState
   | NodesDraggingViewState
   | CanvasDraggingViewState;
@@ -64,6 +69,7 @@ export const useViewModel = (props: Omit<ViewModelProps, 'setViewState'>) => {
   const addRectangleViewModel = useAddRectangleViewModel(newProps);
   const selectionWindowViewModel = useSelectionWindowViewModel(newProps);
   const nodesDraggingViewModel = useNodesDraggingViewModel(newProps);
+  const nodesResizingViewModel = useNodesResizingViewModel(newProps);
   const canvasDraggingViewModel = useCanvasDraggingViewModel(newProps);
   const actionsDecorator = useActionsDecorator(newProps);
   const zoomDecorator = useZoomDecorator(newProps);
@@ -90,7 +96,12 @@ export const useViewModel = (props: Omit<ViewModelProps, 'setViewState'>) => {
       viewModel = selectionWindowViewModel(viewState);
       break;
     case 'nodes-dragging':
+      console.log(viewState);
       viewModel = nodesDraggingViewModel(viewState);
+      break;
+    case 'nodes-resizing':
+      console.log(viewState);
+      viewModel = nodesResizingViewModel(viewState);
       break;
     case 'canvas-dragging':
       viewModel = actionsDecorator(canvasDraggingViewModel(viewState));

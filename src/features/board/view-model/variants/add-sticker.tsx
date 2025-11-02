@@ -32,6 +32,8 @@ export const useAddStickerViewModel = ({
           text: 'Default',
           x: point.x,
           y: point.y,
+          height: 56,
+          width: 67,
         });
         setViewState(goToIdle());
       },

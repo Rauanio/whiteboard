@@ -71,8 +71,6 @@ export const ZoomControls = ({
 
   const onZoomOut = () => zoom({ scale: 0.9 });
 
-  console.log(zoomPercentage);
-
   const toggleFullscreen = () => {
     if (!document.fullscreenElement) {
       document.documentElement.requestFullscreen().then(() => {

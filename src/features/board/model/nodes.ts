@@ -7,11 +7,9 @@ interface NodeBase {
   type: string;
 }
 
-interface StickerNode extends NodeBase {
+interface StickerNode extends NodeBase, Rect {
   type: 'sticker';
   text: string;
-  x: number;
-  y: number;
 }
 
 interface RectangleNode extends NodeBase, Rect {
@@ -34,9 +32,24 @@ export const useNodes = () => {
     redo,
     canRedo,
     canUndo,
-  } = useStateHistory<Node[]>([]);
+  } = useStateHistory<Node[]>([
+    {
+      id: '1',
+      type: 'rectangle',
+      height: 200,
+      width: 200,
+      x: 100,
+      y: 100,
+    },
+  ]);
 
-  const addStickerNode = (data: { text: string; x: number; y: number }) => {
+  const addStickerNode = (data: {
+    text: string;
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  }) => {
     setNodes([
       ...nodes,
       {
@@ -136,6 +149,12 @@ export const useNodes = () => {
     );
   };
 
+  const resizeNode = ({ height, width, x, y, id }: Rect & { id: string }) => {
+    setNodes((prev) =>
+      prev.map((node) => (node.id === id ? { ...node, height, width, x, y } : node))
+    );
+  };
+
   return {
     nodes,
     addStickerNode,
@@ -144,6 +163,7 @@ export const useNodes = () => {
     updateStickerText,
     deleteNodes,
     updateNodesPositions,
+    resizeNode,
     undo,
     redo,
     canRedo,

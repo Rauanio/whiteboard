@@ -7,6 +7,8 @@ import { useGoToSelectionWindow } from './use-go-to-selection-window';
 import { useMouseDown } from './use-mouse-down';
 import { useSelection } from './use-selection';
 import { useGoToNodesDragging } from './use-go-to-nodes-dragging';
+import type { ResizeDirection } from '@/features/board/ui/resizable-box';
+import { useGoToNodesResizing } from './use-go-to-nodes-resizing';
 
 export interface IdleViewState {
   type: 'idle';
@@ -18,6 +20,11 @@ export interface IdleViewState {
     | ({
         type: 'node';
         nodeId: string;
+      } & Point)
+    | ({
+        type: 'resize';
+        nodeId: string;
+        direction: ResizeDirection;
       } & Point);
 }
 
@@ -29,6 +36,7 @@ export const useIdleViewModel = (props: ViewModelProps) => {
   const goToEditSticker = useGoToEditSticker(props);
   const goToSelectionWindow = useGoToSelectionWindow(props);
   const goToNodesDragging = useGoToNodesDragging(props);
+  const goToNodesResizing = useGoToNodesResizing(props);
   const mouseDown = useMouseDown(props);
 
   return (idleState: IdleViewState): ViewModel => ({
@@ -37,6 +45,11 @@ export const useIdleViewModel = (props: ViewModelProps) => {
       isSelected: selection.isSelected(idleState, node.id),
       onMouseDown: (e: React.MouseEvent) => {
         mouseDown.handleNodeMouseDown(idleState, node.id, e);
+      },
+      onHandleMouseDown: (e, dir) => {
+        console.log(e, dir);
+
+        mouseDown.handleResizeMouseDown(idleState, node.id, e, dir);
       },
       onMouseUp: (e: React.MouseEvent) => {
         if (!mouseDown.getIsNodeMouseDown(idleState, node.id)) {
@@ -56,6 +69,7 @@ export const useIdleViewModel = (props: ViewModelProps) => {
       onMouseMove: (e) => {
         goToSelectionWindow.handleWindowMouseMove(idleState, e);
         goToNodesDragging.handleWindowMouseMove(idleState, e);
+        goToNodesResizing.handleWindowMouseMove(idleState, e);
       },
       onMouseUp: () => mouseDown.handleWindowMouseUp(idleState),
     },

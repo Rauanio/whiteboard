@@ -1,12 +1,15 @@
 import clsx from 'clsx';
 import { useEffect, useLayoutEffect, useRef, useState, type Ref } from 'react';
 import { SelectionBox } from '../selection-box';
+import { ResizableBox } from '../resizable-box';
 
 export function Sticker({
   id,
   text,
   x,
   y,
+  width,
+  height,
   ref,
   isSelected,
   isEditing,
@@ -14,25 +17,32 @@ export function Sticker({
   onTextChange,
   onMouseDown,
   onMouseUp,
+  onHandleMouseDown,
 }: {
   id: string;
   text: string;
   x: number;
   y: number;
+  width: number;
+  height: number;
   ref: Ref<HTMLButtonElement>;
   isSelected?: boolean;
   isEditing?: boolean;
   onTextChange?: (text: string) => void;
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   onMouseDown?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  onHandleMouseDown?: (e: React.MouseEvent<HTMLDivElement>) => void;
   onMouseUp?: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }) {
   return (
-    <SelectionBox x={x} y={y} isSelected={isSelected}>
+    <SelectionBox width={width} height={height} x={x} y={y} isSelected={isSelected}>
+      {isSelected && <ResizableBox onMouseDown={onHandleMouseDown} />}
       <button
         data-id={id}
         ref={ref}
-        className={clsx(' bg-yellow-300 cursor-move px-2 py-4 rounded-xs shadow-md')}
+        className={clsx(
+          'bg-yellow-300 cursor-move px-2 py-4 rounded-xs shadow-md w-full h-full'
+        )}
         onClick={onClick}
         onMouseDown={onMouseDown}
         onMouseUp={onMouseUp}
