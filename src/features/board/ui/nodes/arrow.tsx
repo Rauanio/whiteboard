@@ -36,6 +36,7 @@ export const Arrow = ({
   const arrowRightDiff = [Math.cos(arrowRightAngle) * 16, Math.sin(arrowRightAngle) * 16];
   const arrowLeftDiff = [Math.cos(arrowLeftAngle) * 16, Math.sin(arrowLeftAngle) * 16];
 
+  console.log(start);
 
   return (
     <svg className="absolute left-0 top-0 pointer-events-none overflow-visible z-1">

@@ -16,6 +16,7 @@ import { Actions } from './ui/actions';
 import { Arrow } from './ui/nodes/arrow';
 import { UndoRedoControls } from './ui/controls/undo-redo-controls';
 import { ZoomControls } from './ui/controls/zoom-controls';
+import { FreeHand } from './ui/nodes/free-hand';
 
 const BoardPage = () => {
   const nodesModel = useNodes();
@@ -63,6 +64,11 @@ const BoardPage = () => {
           }
           if (node.type === 'arrow') {
             return <Arrow key={node.id} ref={nodeRef} {...node} />;
+          }
+          if (node.type === 'free-hand') {
+            console.log('РЕСУЕТСЯ');
+
+            return <FreeHand key={node.id} ref={nodeRef} {...node} />;
           }
         })}
         {viewModel.selectionWindow && <SelectionWindow {...viewModel.selectionWindow} />}

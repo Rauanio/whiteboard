@@ -65,7 +65,11 @@ export function Actions({ actions }: { actions: ViewModel['actions'] }) {
       <ActionButton isActive={false} onClick={() => {}} hotKey={8}>
         <Type />
       </ActionButton>
-      <ActionButton isActive={false} onClick={() => {}} hotKey={9}>
+      <ActionButton
+        isActive={actions?.addFreeHand?.isActive}
+        onClick={actions?.addFreeHand?.onClick}
+        hotKey={9}
+      >
         <Pencil />
       </ActionButton>
     </div>

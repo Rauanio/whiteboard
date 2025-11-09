@@ -1,5 +1,6 @@
 import type { Point } from '../domain/point';
 import type { Rect } from '../domain/rect';
+import type { FreeHandPoints } from '../domain/svg';
 import type { WindowPosition } from '../model/window-position';
 import type { ResizeDirection } from '../ui/resizable-box';
 
@@ -45,9 +46,21 @@ type ViewModelArrowNode = {
   onMouseUp?: (e: React.MouseEvent<SVGPathElement>) => void;
 };
 
+type ViewModelFreeHandNode = {
+  id: string;
+  type: 'free-hand';
+  points: FreeHandPoints;
+  isSelected?: boolean;
+  noPointerEvents?: boolean;
+  onClick?: (e: React.MouseEvent<SVGSVGElement>) => void;
+  onMouseDown?: (e: React.MouseEvent<SVGSVGElement>) => void;
+  onMouseUp?: (e: React.MouseEvent<SVGSVGElement>) => void;
+};
+
 export type ViewModelNode =
   | ViewModelStickerNode
   | ViewModelRectangleNode
+  | ViewModelFreeHandNode
   | ViewModelArrowNode;
 
 export interface ViewModel {
@@ -78,6 +91,7 @@ export interface ViewModel {
     addSticker?: ViewModelAction;
     addRectangle?: ViewModelAction;
     addArrow?: ViewModelAction;
+    addFreeHand?: ViewModelAction;
     canvasDragging?: ViewModelAction;
   };
 }

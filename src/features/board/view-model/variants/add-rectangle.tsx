@@ -20,9 +20,23 @@ export const useAddRectangleViewModel = ({
   return (state: AddRectangleViewState): ViewModel => {
     const rect = state.start && state.end && createRectFromPoints(state.start, state.end);
 
+    const newNodes = rect
+      ? [
+          ...nodesModel.nodes,
+          {
+            id: 'drawing-rectangle',
+            type: 'rectangle' as const,
+            text: '',
+            x: rect?.x,
+            y: rect.y,
+            width: rect?.width,
+            height: rect?.height,
+          },
+        ]
+      : nodesModel.nodes;
+
     return {
-      nodes: nodesModel.nodes,
-      rectangleWindow: state.start && rect,
+      nodes: newNodes,
       layout: {
         cursor: 'cursor-crosshair',
       },

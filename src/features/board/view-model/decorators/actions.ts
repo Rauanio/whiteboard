@@ -1,4 +1,5 @@
 import { goToAddArrow } from '../variants/add-arrow';
+import { goToAddFreeHand } from '../variants/add-free-hand';
 import { goToAddRectangle } from '../variants/add-rectangle';
 import { goToAddSticker } from '../variants/add-sticker';
 import { goToCanvasDragging } from '../variants/canvas-dragging';
@@ -27,6 +28,9 @@ export const useActionsDecorator = ({ setViewState }: ViewModelProps) => {
         if (e.key === 'a' || e.key === '7') {
           setViewState(goToAddArrow());
         }
+        if (e.key === 'f' || e.key === '9') {
+          setViewState(goToAddFreeHand());
+        }
         viewModel.layout?.onKeyDown?.(e);
       },
     },
@@ -46,6 +50,10 @@ export const useActionsDecorator = ({ setViewState }: ViewModelProps) => {
       addArrow: {
         isActive: false,
         onClick: () => setViewState(goToAddArrow()),
+      },
+      addFreeHand: {
+        isActive: false,
+        onClick: () => setViewState(goToAddFreeHand()),
       },
       canvasDragging: {
         isActive: false,

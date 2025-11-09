@@ -1,6 +1,7 @@
 import type { Rect } from '../domain/rect';
 import { type Point } from '../domain/point';
 import { useStateHistory } from './history';
+import type { FreeHandPoints } from '../domain/svg';
 
 interface NodeBase {
   id: string;
@@ -22,7 +23,12 @@ interface ArrowNode extends NodeBase {
   end: Point;
 }
 
-export type Node = StickerNode | RectangleNode | ArrowNode;
+interface FreeHandNode extends NodeBase {
+  type: 'free-hand';
+  points: FreeHandPoints;
+}
+
+export type Node = StickerNode | RectangleNode | ArrowNode | FreeHandNode;
 
 export const useNodes = () => {
   const {
@@ -90,6 +96,19 @@ export const useNodes = () => {
         id: crypto.randomUUID(),
         type: 'arrow',
         ...data,
+      },
+    ]);
+  };
+
+  console.log(nodes, 'nodes');
+
+  const addFreeHandNode = (points: FreeHandPoints) => {
+    setNodes([
+      ...nodes,
+      {
+        id: crypto.randomUUID(),
+        type: 'free-hand',
+        points,
       },
     ]);
   };
@@ -196,6 +215,7 @@ export const useNodes = () => {
     addStickerNode,
     addRectangleNode,
     addArrowNode,
+    addFreeHandNode,
     updateStickerText,
     deleteNodes,
     updateNodesPositions,

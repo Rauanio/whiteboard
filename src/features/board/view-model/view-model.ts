@@ -34,12 +34,17 @@ import {
   useNodesResizingViewModel,
   type NodesResizingViewState,
 } from './variants/nodes-resizing';
+import {
+  useAddFreeHandViewModel,
+  type AddFreeHandViewState,
+} from './variants/add-free-hand';
 
 type ViewState =
   | IdleViewState
   | AddStickerViewState
   | AddRectangleViewState
   | AddArrowViewState
+  | AddFreeHandViewState
   | EditStickerViewState
   | NodesResizingViewState
   | SelectionWindowViewState
@@ -67,6 +72,7 @@ export const useViewModel = (props: Omit<ViewModelProps, 'setViewState'>) => {
   const addArrowViewModel = useAddArrowViewModel(newProps);
   const editStickerViewModel = useEditStickerViewModel(newProps);
   const addRectangleViewModel = useAddRectangleViewModel(newProps);
+  const addFreeHandViewModel = useAddFreeHandViewModel(newProps);
   const selectionWindowViewModel = useSelectionWindowViewModel(newProps);
   const nodesDraggingViewModel = useNodesDraggingViewModel(newProps);
   const nodesResizingViewModel = useNodesResizingViewModel(newProps);
@@ -91,6 +97,9 @@ export const useViewModel = (props: Omit<ViewModelProps, 'setViewState'>) => {
       break;
     case 'add-arrow':
       viewModel = actionsDecorator(addArrowViewModel(viewState));
+      break;
+    case 'add-free-hand':
+      viewModel = actionsDecorator(addFreeHandViewModel(viewState));
       break;
     case 'selection-window':
       viewModel = selectionWindowViewModel(viewState);
