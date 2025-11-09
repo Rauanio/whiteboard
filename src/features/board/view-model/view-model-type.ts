@@ -66,7 +66,6 @@ export type ViewModelNode =
 export interface ViewModel {
   nodes: ViewModelNode[];
   selectionWindow?: Rect;
-  rectangleWindow?: Rect;
   windowPosition?: WindowPosition;
   layout?: {
     onKeyDown?: (e: React.KeyboardEvent<HTMLDivElement>) => void;

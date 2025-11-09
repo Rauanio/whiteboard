@@ -100,8 +100,6 @@ export const useNodes = () => {
     ]);
   };
 
-  console.log(nodes, 'nodes');
-
   const addFreeHandNode = (points: FreeHandPoints) => {
     setNodes([
       ...nodes,

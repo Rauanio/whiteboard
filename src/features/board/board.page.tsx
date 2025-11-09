@@ -66,13 +66,10 @@ const BoardPage = () => {
             return <Arrow key={node.id} ref={nodeRef} {...node} />;
           }
           if (node.type === 'free-hand') {
-            console.log('РЕСУЕТСЯ');
-
             return <FreeHand key={node.id} ref={nodeRef} {...node} />;
           }
         })}
         {viewModel.selectionWindow && <SelectionWindow {...viewModel.selectionWindow} />}
-        {viewModel.rectangleWindow && <Rectangle {...viewModel.rectangleWindow} />}
       </Canvas>
 
       <Actions actions={viewModel.actions} />
