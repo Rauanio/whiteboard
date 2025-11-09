@@ -19,8 +19,6 @@ export const useGoToNodesResizing = ({
       );
       if (!node) return;
 
-      console.log(node, 'node');
-
       const currentPoint = pointOnScreenToCanvas(
         {
           x: e.clientX,
@@ -31,20 +29,33 @@ export const useGoToNodesResizing = ({
       );
 
       if (distanceFromPoints(idleState.onMouseDown, currentPoint) > 5) {
-        if (node.type !== 'arrow') {
-          setViewState(
-            goToNodesResizing({
-              nodeId: idleState.onMouseDown.nodeId,
-              direction: idleState.onMouseDown.direction,
-              startPoint: {
-                x: idleState.onMouseDown.x,
-                y: idleState.onMouseDown.y,
-              },
-              endPoint: currentPoint,
-              node,
-            })
-          );
+        let nodeResizingState;
+        if (node.type === 'arrow') {
+          nodeResizingState = {
+            nodeId: idleState.onMouseDown.nodeId,
+            direction: idleState.onMouseDown.direction,
+            startPoint: {
+              x: idleState.onMouseDown.x,
+              y: idleState.onMouseDown.y,
+            },
+            endPoint: currentPoint,
+            initialStart: node.start,
+            initialEnd: node.end,
+          };
+        } else {
+          nodeResizingState = {
+            nodeId: idleState.onMouseDown.nodeId,
+            direction: idleState.onMouseDown.direction,
+            startPoint: {
+              x: idleState.onMouseDown.x,
+              y: idleState.onMouseDown.y,
+            },
+            endPoint: currentPoint,
+            node,
+          };
         }
+
+        setViewState(goToNodesResizing(nodeResizingState));
       }
     }
   };

@@ -1,5 +1,8 @@
+// TODO Переделать стрелку использую <marker> и <line>
+
 import type { Ref } from 'react';
 import { diffPoints, type Point } from '../../domain/point';
+import { ResizableArrow, type ArrowResizeDirection } from '../resizable-arrow';
 import clsx from 'clsx';
 
 export const Arrow = ({
@@ -10,6 +13,7 @@ export const Arrow = ({
   noPointerEvents,
   onClick,
   onMouseDown,
+  onHandleMouseDown,
   onMouseUp,
 }: {
   start: Point;
@@ -19,26 +23,30 @@ export const Arrow = ({
   noPointerEvents?: boolean;
   onClick?: (e: React.MouseEvent<SVGPathElement>) => void;
   onMouseDown?: (e: React.MouseEvent<SVGPathElement>) => void;
+  onHandleMouseDown?: (
+    e: React.MouseEvent<HTMLDivElement>,
+    dir: ArrowResizeDirection
+  ) => void;
   onMouseUp?: (e: React.MouseEvent<SVGPathElement>) => void;
 }) => {
   const diff = diffPoints(start, end);
   const angle = Math.atan2(diff.y, diff.x);
   const arrowRightAngle = angle + Math.PI * (1 - 1 / 6);
   const arrowLeftAngle = angle - Math.PI * (1 - 1 / 6);
-  const arrowRightDiff = [Math.cos(arrowRightAngle) * 10, Math.sin(arrowRightAngle) * 10];
-  const arrowLeftDiff = [Math.cos(arrowLeftAngle) * 10, Math.sin(arrowLeftAngle) * 10];
+  const arrowRightDiff = [Math.cos(arrowRightAngle) * 16, Math.sin(arrowRightAngle) * 16];
+  const arrowLeftDiff = [Math.cos(arrowLeftAngle) * 16, Math.sin(arrowLeftAngle) * 16];
+
 
   return (
-    <svg className="absolute left-0 top-0 pointer-events-none overflow-visible">
+    <svg className="absolute left-0 top-0 pointer-events-none overflow-visible z-1">
       <path
         ref={ref}
         className={clsx(
           ' cursor-move',
-          isSelected && 'outline-2 outline-blue-400 ',
           noPointerEvents ? 'pointer-events-none' : 'pointer-events-auto'
         )}
         stroke="black"
-        strokeWidth={2}
+        strokeWidth={4}
         strokeLinejoin="round"
         strokeLinecap="round"
         onClick={onClick}
@@ -52,6 +60,10 @@ export const Arrow = ({
           L ${end.x} ${end.y}
           `}
       />
+
+      {isSelected && (
+        <ResizableArrow start={start} end={end} onMouseDown={onHandleMouseDown} />
+      )}
     </svg>
   );
 };

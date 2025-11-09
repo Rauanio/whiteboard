@@ -98,7 +98,7 @@ export const TextareaAutoSize = ({
       {isEditing && (
         <textarea
           ref={textAreaRef}
-          className="absolute top-0 left-0 resize-none overflow-hidden focus:outline-none"
+          className="absolute top-0 left-0 resize-none overflow-hidden focus:outline-none "
           value={value}
           onChange={(e) => onChange?.(e.target.value)}
           style={{

@@ -9,6 +9,7 @@ import { useSelection } from './use-selection';
 import { useGoToNodesDragging } from './use-go-to-nodes-dragging';
 import type { ResizeDirection } from '@/features/board/ui/resizable-box';
 import { useGoToNodesResizing } from './use-go-to-nodes-resizing';
+import type { ArrowResizeDirection } from '@/features/board/ui/resizable-arrow';
 
 export interface IdleViewState {
   type: 'idle';
@@ -24,7 +25,7 @@ export interface IdleViewState {
     | ({
         type: 'resize';
         nodeId: string;
-        direction: ResizeDirection;
+        direction: ResizeDirection | ArrowResizeDirection;
       } & Point);
 }
 
@@ -47,8 +48,6 @@ export const useIdleViewModel = (props: ViewModelProps) => {
         mouseDown.handleNodeMouseDown(idleState, node.id, e);
       },
       onHandleMouseDown: (e, dir) => {
-        console.log(e, dir);
-
         mouseDown.handleResizeMouseDown(idleState, node.id, e, dir);
       },
       onMouseUp: (e: React.MouseEvent) => {
@@ -77,6 +76,7 @@ export const useIdleViewModel = (props: ViewModelProps) => {
       onKeyDown: (e) => {
         deleteNode.handleDeleteNode(idleState, e);
       },
+      cursor: 'cursor-board',
     },
     actions: {
       idleState: {

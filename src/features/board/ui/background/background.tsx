@@ -6,7 +6,7 @@ import type { BackgroundProps } from './types';
 const BackgroundComponent = ({
   windowPosition,
   variant = 'dots',
-  gap = 40,
+  gap = 20,
   size = 1,
   lineWidth = 1,
   color = '#e5e7eb',
@@ -25,7 +25,7 @@ const BackgroundComponent = ({
 
   return (
     <svg
-      className={clsx('absolute inset-0 w-full h-full', className)}
+      className={clsx('absolute inset-0 w-full h-full ', className)}
       style={
         {
           ...style,

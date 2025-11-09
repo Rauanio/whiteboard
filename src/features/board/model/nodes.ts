@@ -149,9 +149,45 @@ export const useNodes = () => {
     );
   };
 
-  const resizeNode = ({ height, width, x, y, id }: Rect & { id: string }) => {
-    setNodes((prev) =>
-      prev.map((node) => (node.id === id ? { ...node, height, width, x, y } : node))
+  const resizeNodes = (
+    position: {
+      id: string;
+      point: Point;
+      width?: number;
+      height?: number;
+      type?: 'start' | 'end';
+    }[]
+  ) => {
+    const record = Object.fromEntries(position.map((p) => [`${p.id}${p.type ?? ''}`, p]));
+
+    setNodes((lastNodes) =>
+      lastNodes.map((node) => {
+        if (node.type === 'arrow') {
+          const newStart = record[`${node.id}start`];
+          const newEnd = record[`${node.id}end`];
+
+          return {
+            ...node,
+            start: newStart?.point ?? node.start,
+            end: newEnd?.point ?? node.end,
+          };
+        }
+
+        if (node.type === 'sticker' || node.type === 'rectangle') {
+          const newPosition = record[node.id];
+
+          if (newPosition) {
+            return {
+              ...node,
+              ...newPosition.point,
+              height: newPosition?.height ?? node.height,
+              width: newPosition?.width ?? node.width,
+            };
+          }
+        }
+
+        return node;
+      })
     );
   };
 
@@ -163,7 +199,7 @@ export const useNodes = () => {
     updateStickerText,
     deleteNodes,
     updateNodesPositions,
-    resizeNode,
+    resizeNodes,
     undo,
     redo,
     canRedo,

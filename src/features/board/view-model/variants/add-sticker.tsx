@@ -29,7 +29,7 @@ export const useAddStickerViewModel = ({
         );
 
         nodesModel.addStickerNode({
-          text: 'Default',
+          text: 'default',
           x: point.x,
           y: point.y,
           height: 56,

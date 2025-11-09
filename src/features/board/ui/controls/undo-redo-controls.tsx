@@ -1,7 +1,7 @@
 import { ControlButton } from './control-button';
 import { Redo, Undo } from 'lucide-react';
 
-export const HistoryControls = ({
+export const UndoRedoControls = ({
   redo,
   undo,
   canUndo,

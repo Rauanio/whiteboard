@@ -14,7 +14,7 @@ import { useWindowPositionModel } from './model/window-position';
 import { Background } from './ui/background/background';
 import { Actions } from './ui/actions';
 import { Arrow } from './ui/nodes/arrow';
-import { HistoryControls } from './ui/controls/history-controls';
+import { UndoRedoControls } from './ui/controls/undo-redo-controls';
 import { ZoomControls } from './ui/controls/zoom-controls';
 
 const BoardPage = () => {
@@ -41,7 +41,7 @@ const BoardPage = () => {
       ref={layoutFocusRef}
       onKeyDown={viewModel.layout?.onKeyDown}
     >
-      <Background variant="lines" windowPosition={windowPosition} />
+      <Background variant="lines" gap={30} windowPosition={windowPosition} />
       <Canvas
         overlay={
           <Overlay
@@ -71,7 +71,7 @@ const BoardPage = () => {
 
       <Actions actions={viewModel.actions} />
       <div className="absolute bottom-4 right-4 flex gap-3">
-        <HistoryControls
+        <UndoRedoControls
           undo={nodesModel.undo}
           redo={nodesModel.redo}
           canUndo={nodesModel.canUndo}

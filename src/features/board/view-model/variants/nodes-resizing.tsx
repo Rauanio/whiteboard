@@ -1,7 +1,6 @@
-// import { addPoints, diffPoints, isRelativePoint, type Point } from '../../domain/point';
-// import { pointOnScreenToCanvas } from '../../domain/screen-to-canvas';
 import { type Point } from '../../domain/point';
 import { pointOnScreenToCanvas } from '../../domain/screen-to-canvas';
+import type { ArrowResizeDirection } from '../../ui/resizable-arrow';
 import type { ResizeDirection } from '../../ui/resizable-box';
 import type { ViewModelProps } from '../view-model';
 import type { ViewModel } from '../view-model-type';
@@ -11,12 +10,14 @@ export interface NodesResizingViewState {
   type: 'nodes-resizing';
   startPoint: Point;
   endPoint: Point;
-  direction: ResizeDirection;
+  direction: ResizeDirection | ArrowResizeDirection;
   nodeId: string;
   initialWidth: number;
   initialHeight: number;
   initialX: number;
   initialY: number;
+  initialStart: Point;
+  initialEnd: Point;
 }
 
 export const useNodesResizingViewModel = ({
@@ -72,13 +73,37 @@ export const useNodesResizingViewModel = ({
         };
       }
 
+      if (node.id === state.nodeId && node.type === 'arrow') {
+        const dx = state.endPoint.x - state.startPoint.x;
+        const dy = state.endPoint.y - state.startPoint.y;
+
+        if (state.direction === 'start') {
+          return {
+            ...node,
+            start: {
+              x: state.initialStart.x + dx,
+              y: state.initialStart.y + dy,
+            },
+            isSelected: true,
+          };
+        }
+        if (state.direction === 'end') {
+          return {
+            ...node,
+            end: {
+              x: state.initialEnd.x + dx,
+              y: state.initialEnd.y + dy,
+            },
+            isSelected: true,
+          };
+        }
+      }
+
       return node;
     });
   };
   return (state: NodesResizingViewState): ViewModel => {
     const nodes = getNodes(state);
-
-    console.log(state);
 
     return {
       nodes,
@@ -96,23 +121,44 @@ export const useNodesResizingViewModel = ({
           });
         },
         onMouseUp: () => {
-          const resizedNode = nodes.find(
-            (node) =>
-              (node.type === 'rectangle' || node.type === 'sticker') &&
-              node.id === state.nodeId
-          );
+          const resizedNodes = nodes
+            .filter((node) => node.id === state.nodeId)
+            .flatMap((node) => {
+              if (node.type === 'arrow') {
+                return [
+                  {
+                    id: node.id,
+                    point: node.start,
+                    type: 'start' as const,
+                    width: 0,
+                    height: 0,
+                  },
+                  {
+                    id: node.id,
+                    point: node.end,
+                    type: 'end' as const,
+                    width: 0,
+                    height: 0,
+                  },
+                ];
+              }
 
-          if (resizedNode?.type === 'rectangle' || resizedNode?.type === 'sticker') {
-            nodesModel.resizeNode({
-              id: resizedNode.id,
-              width: resizedNode.width,
-              height: resizedNode.height,
-              x: resizedNode.x,
-              y: resizedNode.y,
+              return [
+                {
+                  id: node.id,
+                  point: {
+                    x: node.x,
+                    y: node.y,
+                  },
+                  width: node.width,
+                  height: node.height,
+                },
+              ];
             });
-          }
 
-          setViewState(goToIdle());
+          nodesModel.resizeNodes(resizedNodes);
+
+          setViewState(goToIdle({ selectedIds: new Set([state.nodeId]) }));
         },
       },
       actions: {
@@ -131,12 +177,16 @@ export const goToNodesResizing = ({
   startPoint,
   endPoint,
   node,
+  initialEnd,
+  initialStart,
 }: {
-  direction: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
+  direction: ResizeDirection | ArrowResizeDirection;
   nodeId: string;
   startPoint: Point;
   endPoint: Point;
-  node: { x: number; y: number; width: number; height: number };
+  initialStart?: Point;
+  initialEnd?: Point;
+  node?: { x: number; y: number; width: number; height: number };
 }): NodesResizingViewState => {
   return {
     type: 'nodes-resizing',
@@ -144,9 +194,11 @@ export const goToNodesResizing = ({
     nodeId,
     endPoint,
     startPoint,
-    initialWidth: node.width,
-    initialHeight: node.height,
-    initialX: node.x,
-    initialY: node.y,
+    initialStart: initialStart ?? { x: 0, y: 0 },
+    initialEnd: initialEnd ?? { x: 0, y: 0 },
+    initialWidth: node?.width ?? 0,
+    initialHeight: node?.height ?? 0,
+    initialX: node?.x ?? 0,
+    initialY: node?.y ?? 0,
   };
 };
