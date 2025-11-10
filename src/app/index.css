@@ -134,3 +134,8 @@
 .cursor-move {
   cursor: url('/move.svg'), auto;
 }
+
+
+.cursor-pencil {
+  cursor: url('/pencil.svg'), auto;
+}

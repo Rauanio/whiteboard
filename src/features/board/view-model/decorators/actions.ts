@@ -7,7 +7,7 @@ import { goToIdle } from '../variants/idle';
 import type { ViewModelProps } from '../view-model';
 import type { ViewModel } from '../view-model-type';
 
-export const useActionsDecorator = ({ setViewState }: ViewModelProps) => {
+export const useActionsDecorator = ({ setViewState, lockActions }: ViewModelProps) => {
   return (viewModel: ViewModel): ViewModel => ({
     ...viewModel,
     layout: {
@@ -35,6 +35,10 @@ export const useActionsDecorator = ({ setViewState }: ViewModelProps) => {
       },
     },
     actions: {
+      lockActions: {
+        isActive: lockActions.lock,
+        onClick: () => lockActions.setLock(!lockActions.lock),
+      },
       idleState: {
         isActive: false,
         onClick: () => setViewState(goToIdle()),

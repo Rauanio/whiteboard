@@ -15,6 +15,7 @@ export const useCanvasDraggingViewModel = ({
   canvasRect,
   setViewState,
   windowPositionModel,
+  lockActions,
 }: ViewModelProps) => {
   return (state: CanvasDraggingViewState): ViewModel => {
     const { startPoint, endPoint } = state;
@@ -76,6 +77,9 @@ export const useCanvasDraggingViewModel = ({
         canvasDragging: {
           isActive: true,
           onClick: () => setViewState(goToIdle()),
+        },
+        lockActions: {
+          isActive: lockActions.lock,
         },
       },
     };

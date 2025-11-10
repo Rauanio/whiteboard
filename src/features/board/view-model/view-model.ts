@@ -38,6 +38,7 @@ import {
   useAddFreeHandViewModel,
   type AddFreeHandViewState,
 } from './variants/add-free-hand';
+import type { LockActionsModel } from '../model/lock-actions';
 
 type ViewState =
   | IdleViewState
@@ -57,6 +58,7 @@ export interface ViewModelProps {
   canvasRect: CanvasRect | undefined;
   nodesDimensions: NodesDimensionsMap;
   windowPositionModel: WindowPositionModel;
+  lockActions: LockActionsModel
 }
 
 export const useViewModel = (props: Omit<ViewModelProps, 'setViewState'>) => {

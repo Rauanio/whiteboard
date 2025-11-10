@@ -17,11 +17,13 @@ import { Arrow } from './ui/nodes/arrow';
 import { UndoRedoControls } from './ui/controls/undo-redo-controls';
 import { ZoomControls } from './ui/controls/zoom-controls';
 import { FreeHand } from './ui/nodes/free-hand';
+import { useLockActions } from './model/lock-actions';
 
 const BoardPage = () => {
   const nodesModel = useNodes();
   const layoutFocusRef = useLayoutFocus();
   const windowPositionModel = useWindowPositionModel();
+  const lockActions = useLockActions();
   const { canvasRef, canvasRect } = useCanvasRect();
   const { nodeRef, nodesDimensions } = useNodesDimensions();
 
@@ -30,6 +32,7 @@ const BoardPage = () => {
     nodesModel,
     nodesDimensions,
     windowPositionModel,
+    lockActions
   });
 
   useWindowEvents(viewModel);

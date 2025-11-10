@@ -1,4 +1,3 @@
-// import { createRectFromFreeHandPoints } from '../../domain/rect';
 import { pointOnScreenToCanvas } from '../../domain/screen-to-canvas';
 import type { FreeHandPoints } from '../../domain/svg';
 import type { ViewModelProps } from '../view-model';
@@ -31,9 +30,9 @@ export const useAddFreeHandViewModel = ({
 
     return {
       nodes: newNodes,
-      // layout: {
-      //   cursor: 'cursor-crosshair',
-      // },
+      layout: {
+        cursor: 'cursor-pencil',
+      },
       overlay: {
         onMouseDown: (e) => {
           const point = pointOnScreenToCanvas(
@@ -71,7 +70,6 @@ export const useAddFreeHandViewModel = ({
           nodesModel.addFreeHandNode({
             points: state.points,
           });
-          // setViewState(goToIdle());
         },
       },
       actions: {

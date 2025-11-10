@@ -16,6 +16,7 @@ export const useAddRectangleViewModel = ({
   canvasRect,
   setViewState,
   windowPositionModel,
+  lockActions,
 }: ViewModelProps) => {
   return (state: AddRectangleViewState): ViewModel => {
     const rect = state.start && state.end && createRectFromPoints(state.start, state.end);
@@ -82,6 +83,12 @@ export const useAddRectangleViewModel = ({
               ...rect,
             });
           }
+
+          if (lockActions.lock) {
+            setViewState(goToAddRectangle());
+            return;
+          }
+
           setViewState(goToIdle());
         },
       },

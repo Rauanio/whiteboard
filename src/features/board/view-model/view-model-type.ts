@@ -89,6 +89,7 @@ export interface ViewModel {
     onMouseWheel?: (e: WheelEvent) => void;
   };
   actions?: {
+    lockActions?: ViewModelAction
     idleState?: ViewModelAction;
     addSticker?: ViewModelAction;
     addRectangle?: ViewModelAction;

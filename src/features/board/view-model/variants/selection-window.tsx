@@ -25,6 +25,7 @@ export const useSelectionWindowViewModel = ({
   nodesDimensions,
   setViewState,
   windowPositionModel,
+  lockActions,
 }: ViewModelProps) => {
   const getNodes = (state: SelectionWindowViewState, selectionRect: Rect) => {
     const relativeBase = createRelativeBase(nodesModel.nodes);
@@ -97,6 +98,9 @@ export const useSelectionWindowViewModel = ({
         idleState: {
           isActive: true,
           onClick: () => setViewState(goToIdle()),
+        },
+        lockActions: {
+          isActive: lockActions.lock,
         },
       },
     };

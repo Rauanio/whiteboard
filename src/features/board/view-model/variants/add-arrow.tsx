@@ -19,6 +19,7 @@ export const useAddArrowViewModel = ({
   setViewState,
   canvasRect,
   windowPositionModel,
+  lockActions,
 }: ViewModelProps) => {
   return (state: AddArrowViewState): ViewModel => {
     const addArrow = (
@@ -111,7 +112,6 @@ export const useAddArrowViewModel = ({
           setStartPoint(e);
         },
         onMouseUp: (e) => {
-          console.log('onMouseUp on overlay');
           addArrow(state, {
             end: { x: e.clientX, y: e.clientY },
             start: { x: e.clientX, y: e.clientY },
@@ -137,6 +137,10 @@ export const useAddArrowViewModel = ({
           }
         },
         onMouseUp: () => {
+          if (lockActions.lock) {
+            setViewState(goToAddArrow());
+            return;
+          }
           setViewState(goToIdle());
         },
       },

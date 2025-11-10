@@ -17,7 +17,10 @@ import { Separator } from '@/shared/ui/kit/separator';
 export function Actions({ actions }: { actions: ViewModel['actions'] }) {
   return (
     <div className="absolute top-4 left-1/2 -translate-x-1/2 flex gap-2 bg-white p-1 rounded-lg shadow">
-      <ActionButton isActive={false} onClick={() => {}}>
+      <ActionButton
+        isActive={actions?.lockActions?.isActive}
+        onClick={actions?.lockActions?.onClick}
+      >
         <LockKeyholeOpen />
       </ActionButton>
       <Separator orientation="vertical" className="mx-1" />

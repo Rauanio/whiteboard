@@ -12,6 +12,7 @@ export const useAddStickerViewModel = ({
   canvasRect,
   setViewState,
   windowPositionModel,
+  lockActions,
 }: ViewModelProps) => {
   return (): ViewModel => ({
     nodes: nodesModel.nodes,
@@ -35,6 +36,11 @@ export const useAddStickerViewModel = ({
           height: 56,
           width: 67,
         });
+
+        if (lockActions.lock) {
+          setViewState(goToAddSticker());
+          return;
+        }
         setViewState(goToIdle());
       },
     },
