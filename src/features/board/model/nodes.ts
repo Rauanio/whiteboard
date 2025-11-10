@@ -37,6 +37,15 @@ export interface NodeUpdatePosition {
   type?: 'start' | 'end';
 }
 
+export interface NodeUpdateResizing {
+  id: string;
+  point?: Point;
+  points?: FreeHandPoints;
+  width?: number;
+  height?: number;
+  type?: 'start' | 'end';
+}
+
 export const useNodes = () => {
   const {
     state: nodes,
@@ -107,13 +116,17 @@ export const useNodes = () => {
     ]);
   };
 
-  const addFreeHandNode = (points: FreeHandPoints) => {
+  const addFreeHandNode = (data: {
+    points: FreeHandPoints;
+    // width: number;
+    // height: number;
+  }) => {
     setNodes([
       ...nodes,
       {
         id: crypto.randomUUID(),
         type: 'free-hand',
-        points,
+        ...data,
       },
     ]);
   };
@@ -164,8 +177,9 @@ export const useNodes = () => {
 
         if (node.type === 'free-hand') {
           const newPosition = record[node.id];
-
-          return { ...node, points: newPosition.points ?? [] };
+          if (newPosition) {
+            return { ...node, points: newPosition.points ?? [] };
+          }
         }
 
         return node;
@@ -173,17 +187,7 @@ export const useNodes = () => {
     );
   };
 
-  console.log(nodes, 'nodes');
-
-  const resizeNodes = (
-    position: {
-      id: string;
-      point: Point;
-      width?: number;
-      height?: number;
-      type?: 'start' | 'end';
-    }[]
-  ) => {
+  const resizeNodes = (position: NodeUpdateResizing[]) => {
     const record = Object.fromEntries(position.map((p) => [`${p.id}${p.type ?? ''}`, p]));
 
     setNodes((lastNodes) =>
@@ -212,10 +216,23 @@ export const useNodes = () => {
           }
         }
 
+        if (node.type === 'free-hand') {
+          const newPosition = record[node.id];
+
+          if (newPosition) {
+            return {
+              ...node,
+              points: newPosition.points ?? [],
+            };
+          }
+        }
+
         return node;
       })
     );
   };
+
+  console.log(nodes);
 
   return {
     nodes,

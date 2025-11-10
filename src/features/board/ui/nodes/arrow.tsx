@@ -1,9 +1,7 @@
-// TODO Переделать стрелку использую <marker> и <line>
-
 import type { Ref } from 'react';
-import { diffPoints, type Point } from '../../domain/point';
-import { ResizableArrow, type ArrowResizeDirection } from '../resizable-arrow';
+import { type Point } from '../../domain/point';
 import clsx from 'clsx';
+import { Resizable, type ResizeDirection } from '../resizable';
 
 export const Arrow = ({
   start,
@@ -18,52 +16,65 @@ export const Arrow = ({
 }: {
   start: Point;
   end: Point;
-  ref: Ref<SVGPathElement>;
+  ref: Ref<SVGGElement>;
   isSelected?: boolean;
   noPointerEvents?: boolean;
   onClick?: (e: React.MouseEvent<SVGPathElement>) => void;
   onMouseDown?: (e: React.MouseEvent<SVGPathElement>) => void;
   onHandleMouseDown?: (
-    e: React.MouseEvent<HTMLDivElement>,
-    dir: ArrowResizeDirection
+    e: React.MouseEvent<SVGElement>,
+    dir: ResizeDirection
   ) => void;
   onMouseUp?: (e: React.MouseEvent<SVGPathElement>) => void;
 }) => {
-  const diff = diffPoints(start, end);
-  const angle = Math.atan2(diff.y, diff.x);
-  const arrowRightAngle = angle + Math.PI * (1 - 1 / 6);
-  const arrowLeftAngle = angle - Math.PI * (1 - 1 / 6);
-  const arrowRightDiff = [Math.cos(arrowRightAngle) * 16, Math.sin(arrowRightAngle) * 16];
-  const arrowLeftDiff = [Math.cos(arrowLeftAngle) * 16, Math.sin(arrowLeftAngle) * 16];
-
-  console.log(start);
-
   return (
     <svg className="absolute left-0 top-0 pointer-events-none overflow-visible z-1">
-      <path
+      <g
         ref={ref}
         className={clsx(
           'cursor-move',
           noPointerEvents ? 'pointer-events-none' : 'pointer-events-auto'
         )}
-        stroke="black"
-        strokeWidth={4}
-        strokeLinejoin="round"
-        strokeLinecap="round"
-        onClick={onClick}
-        onMouseDown={onMouseDown}
-        onMouseUp={onMouseUp}
-        d={`
-          M ${start.x} ${start.y} L ${end.x} ${end.y} 
-          M ${end.x} ${end.y} L ${end.x + arrowRightDiff[0]} ${end.y + arrowRightDiff[1]} 
-          L ${end.x + -5 * Math.cos(angle)} ${end.y + -5 * Math.sin(angle)}
-          L ${end.x + arrowLeftDiff[0]} ${end.y + arrowLeftDiff[1]}
-          L ${end.x} ${end.y}
-          `}
-      />
+      >
+        <defs>
+          <marker
+            id="arrow"
+            viewBox="0 0 10 10"
+            refX="5"
+            refY="5"
+            markerWidth="5"
+            markerHeight="5"
+            strokeLinejoin="round"
+            stroke="black"
+            strokeLinecap="round"
+            orient="auto-start-reverse"
+          >
+            <path d="M 0 0 L 10 5 L 0 10 L 5 5 Z" />
+          </marker>
+        </defs>
+        <line
+          x1={start.x}
+          y1={start.y}
+          x2={end.x}
+          y2={end.y}
+          stroke="black"
+          strokeWidth={4}
+          strokeLinejoin="round"
+          strokeLinecap="round"
+          onClick={onClick}
+          onMouseDown={onMouseDown}
+          onMouseUp={onMouseUp}
+          marker-end="url(#arrow)"
+        />
+      </g>
 
       {isSelected && (
-        <ResizableArrow start={start} end={end} onMouseDown={onHandleMouseDown} />
+        <Resizable
+          type="double"
+          start={start}
+          end={end}
+          onHandleMouseDown={onHandleMouseDown}
+        />
       )}
     </svg>
   );

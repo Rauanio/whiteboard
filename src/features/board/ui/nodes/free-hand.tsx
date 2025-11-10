@@ -2,8 +2,9 @@ import React, { type Ref } from 'react';
 import { getStroke } from 'perfect-freehand';
 import { getSvgPathFromStroke, type FreeHandPoints } from '../../domain/svg';
 import { createRectFromFreeHandPoints } from '../../domain/rect';
+import { Selectable } from '../selectable';
 import clsx from 'clsx';
-import type { ResizeDirection } from '../resizable-box';
+import type { ResizeDirection } from '../resizable';
 
 interface FreeHandProps {
   id?: string;
@@ -15,12 +16,9 @@ interface FreeHandProps {
   onMouseMove?: (e: React.MouseEvent<SVGPathElement>) => void;
   onMouseUp?: (e: React.MouseEvent<SVGPathElement>) => void;
   onClick?: (e: React.MouseEvent<SVGPathElement>) => void;
-  onHandleMouseDown?: (e: React.MouseEvent<SVGRectElement>, dir: ResizeDirection) => void;
+  onHandleMouseDown?: (e: React.MouseEvent<SVGElement>, dir: ResizeDirection) => void;
 }
 
-/**
- * FreeHand + рамка выделения + 4 угловых resize-хэндла.
- */
 export const FreeHand = ({
   id,
   points,
@@ -41,17 +39,7 @@ export const FreeHand = ({
   });
 
   const pathData = getSvgPathFromStroke(stroke);
-  const { x, y, width, height } = createRectFromFreeHandPoints(points);
-
-  const HADNLE_SIZE = 8;
-  const half = HADNLE_SIZE / 2;
-
-  const handles = [
-    { dir: 'top-left' as const, cx: x - half, cy: y - half },
-    { dir: 'top-right' as const, cx: x + width + half, cy: y - half },
-    { dir: 'bottom-left' as const, cx: x - half, cy: y + height + half },
-    { dir: 'bottom-right' as const, cx: x + width + half, cy: y + height + half },
-  ];
+  const { x, y, width, height } = createRectFromFreeHandPoints(stroke);
 
   return (
     <svg
@@ -62,40 +50,15 @@ export const FreeHand = ({
     >
       <g>
         {isSelected && (
-          <>
-            {/* рамка */}
-            <rect
-              x={x - 4}
-              y={y - 4}
-              width={width + 8}
-              height={height + 8}
-              fill="transparent"
-              stroke="#3b82f6"
-              strokeWidth={2}
-              rx={4}
-              ry={4}
-            />
-
-            {/* 4 угловых resize-хэндла */}
-            {handles.map(({ dir, cx, cy }) => (
-              <rect
-                key={dir}
-                x={cx - half}
-                y={cy - half}
-                width={HADNLE_SIZE}
-                height={HADNLE_SIZE}
-                fill="white"
-                stroke="#3b82f6"
-                strokeWidth={1}
-                rx={2}
-                className="cursor-pointer pointer-events-auto "
-                onMouseDown={(e) => onHandleMouseDown?.(e, dir)}
-              />
-            ))}
-          </>
+          <Selectable
+            height={height}
+            width={width}
+            x={x}
+            y={y}
+            onHandleMouseDown={onHandleMouseDown}
+          />
         )}
 
-        {/* основной путь */}
         <path
           d={pathData}
           onMouseDown={onMouseDown}

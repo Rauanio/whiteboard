@@ -3,6 +3,7 @@ import type { IdleViewState } from '../idle';
 import type { ViewModelProps } from '../../view-model';
 import { distanceFromPoints } from '@/features/board/domain/point';
 import { goToNodesResizing } from '../nodes-resizing';
+import { createRectFromFreeHandPoints } from '@/features/board/domain/rect';
 
 export const useGoToNodesResizing = ({
   canvasRect,
@@ -42,7 +43,7 @@ export const useGoToNodesResizing = ({
             initialStart: node.start,
             initialEnd: node.end,
           };
-        } else {
+        } else if (node.type === 'rectangle' || node.type === 'sticker') {
           nodeResizingState = {
             nodeId: idleState.onMouseDown.nodeId,
             direction: idleState.onMouseDown.direction,
@@ -52,6 +53,19 @@ export const useGoToNodesResizing = ({
             },
             endPoint: currentPoint,
             node,
+          };
+        } else {
+          const rect = createRectFromFreeHandPoints(node.points);
+
+          nodeResizingState = {
+            nodeId: idleState.onMouseDown.nodeId,
+            direction: idleState.onMouseDown.direction,
+            startPoint: {
+              x: idleState.onMouseDown.x,
+              y: idleState.onMouseDown.y,
+            },
+            endPoint: currentPoint,
+            node: rect,
           };
         }
 

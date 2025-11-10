@@ -7,9 +7,8 @@ import { useGoToSelectionWindow } from './use-go-to-selection-window';
 import { useMouseDown } from './use-mouse-down';
 import { useSelection } from './use-selection';
 import { useGoToNodesDragging } from './use-go-to-nodes-dragging';
-import type { ResizeDirection } from '@/features/board/ui/resizable-box';
 import { useGoToNodesResizing } from './use-go-to-nodes-resizing';
-import type { ArrowResizeDirection } from '@/features/board/ui/resizable-arrow';
+import type { ResizeDirection } from '@/features/board/ui/resizable';
 
 export interface IdleViewState {
   type: 'idle';
@@ -25,7 +24,7 @@ export interface IdleViewState {
     | ({
         type: 'resize';
         nodeId: string;
-        direction: ResizeDirection | ArrowResizeDirection;
+        direction: ResizeDirection;
       } & Point);
 }
 

@@ -1,7 +1,9 @@
-import { type Point } from '../../domain/point';
+import { diffPoints, type Point } from '../../domain/point';
+import { createRectFromFreeHandPoints } from '../../domain/rect';
 import { pointOnScreenToCanvas } from '../../domain/screen-to-canvas';
+import type { NodeUpdateResizing } from '../../model/nodes';
+import type { ResizeDirection } from '../../ui/resizable';
 import type { ArrowResizeDirection } from '../../ui/resizable-arrow';
-import type { ResizeDirection } from '../../ui/resizable-box';
 import type { ViewModelProps } from '../view-model';
 import type { ViewModel } from '../view-model-type';
 import { goToIdle } from './idle';
@@ -28,13 +30,11 @@ export const useNodesResizingViewModel = ({
 }: ViewModelProps) => {
   const getNodes = (state: NodesResizingViewState) => {
     return nodesModel.nodes.map((node) => {
+      const diff = diffPoints(state.startPoint, state.endPoint);
       if (
         node.id === state.nodeId &&
         (node.type === 'rectangle' || node.type === 'sticker')
       ) {
-        const dx = state.endPoint.x - state.startPoint.x;
-        const dy = state.endPoint.y - state.startPoint.y;
-
         let newWidth = state.initialWidth;
         let newHeight = state.initialHeight;
         let newX = state.initialX;
@@ -42,24 +42,24 @@ export const useNodesResizingViewModel = ({
 
         switch (state.direction) {
           case 'bottom-right':
-            newWidth = state.initialWidth + dx;
-            newHeight = state.initialHeight + dy;
+            newWidth = state.initialWidth + diff.x;
+            newHeight = state.initialHeight + diff.y;
             break;
           case 'bottom-left':
-            newWidth = state.initialWidth - dx;
-            newHeight = state.initialHeight + dy;
-            newX = state.initialX + dx;
+            newWidth = state.initialWidth - diff.x;
+            newHeight = state.initialHeight + diff.y;
+            newX = state.initialX + diff.x;
             break;
           case 'top-right':
-            newWidth = state.initialWidth + dx;
-            newHeight = state.initialHeight - dy;
-            newY = state.initialY + dy;
+            newWidth = state.initialWidth + diff.x;
+            newHeight = state.initialHeight - diff.y;
+            newY = state.initialY + diff.y;
             break;
           case 'top-left':
-            newWidth = state.initialWidth - dx;
-            newHeight = state.initialHeight - dy;
-            newX = state.initialX + dx;
-            newY = state.initialY + dy;
+            newWidth = state.initialWidth - diff.x;
+            newHeight = state.initialHeight - diff.y;
+            newX = state.initialX + diff.x;
+            newY = state.initialY + diff.y;
             break;
         }
 
@@ -74,15 +74,12 @@ export const useNodesResizingViewModel = ({
       }
 
       if (node.id === state.nodeId && node.type === 'arrow') {
-        const dx = state.endPoint.x - state.startPoint.x;
-        const dy = state.endPoint.y - state.startPoint.y;
-
         if (state.direction === 'start') {
           return {
             ...node,
             start: {
-              x: state.initialStart.x + dx,
-              y: state.initialStart.y + dy,
+              x: state.initialStart.x + diff.x,
+              y: state.initialStart.y + diff.y,
             },
             isSelected: true,
           };
@@ -91,12 +88,70 @@ export const useNodesResizingViewModel = ({
           return {
             ...node,
             end: {
-              x: state.initialEnd.x + dx,
-              y: state.initialEnd.y + dy,
+              x: state.initialEnd.x + diff.x,
+              y: state.initialEnd.y + diff.y,
             },
             isSelected: true,
           };
         }
+      }
+
+      if (node.id === state.nodeId && node.type === 'free-hand') {
+        let scaleX = 1;
+        let scaleY = 1;
+        let offsetX = state.initialX;
+        let offsetY = state.initialY;
+        switch (state.direction) {
+          case 'bottom-right':
+            scaleX = (state.initialWidth + diff.x) / state.initialWidth;
+            scaleY = (state.initialHeight + diff.y) / state.initialHeight;
+            offsetX = state.initialX;
+            offsetY = state.initialY;
+            break;
+
+          case 'bottom-left':
+            scaleX = (state.initialWidth - diff.x) / state.initialWidth;
+            scaleY = (state.initialHeight + diff.y) / state.initialHeight;
+            offsetX = state.initialX + state.initialWidth;
+            offsetY = state.initialY;
+            break;
+
+          case 'top-right':
+            scaleX = (state.initialWidth + diff.x) / state.initialWidth;
+            scaleY = (state.initialHeight - diff.y) / state.initialHeight;
+            offsetX = state.initialX;
+            offsetY = state.initialY + state.initialHeight;
+            break;
+
+          case 'top-left':
+            scaleX = (state.initialWidth - diff.x) / state.initialWidth;
+            scaleY = (state.initialHeight - diff.y) / state.initialHeight;
+            offsetX = state.initialX + state.initialWidth;
+            offsetY = state.initialY + state.initialHeight;
+            break;
+        }
+
+        const newPoints = node.points.map((p) => {
+          const px = Array.isArray(p) ? p[0] : p.x;
+          const py = Array.isArray(p) ? p[1] : p.y;
+
+          return {
+            x: offsetX + (px - offsetX) * scaleX,
+            y: offsetY + (py - offsetY) * scaleY,
+          };
+        });
+
+        const { x, y, width, height } = createRectFromFreeHandPoints(newPoints);
+
+        return {
+          ...node,
+          points: newPoints,
+          x,
+          y,
+          width,
+          height,
+          isSelected: true,
+        };
       }
 
       return node;
@@ -123,41 +178,44 @@ export const useNodesResizingViewModel = ({
         onMouseUp: () => {
           const resizedNodes = nodes
             .filter((node) => node.id === state.nodeId)
-            .flatMap((node) => {
+            .flatMap((node): NodeUpdateResizing[] => {
+              console.log(node);
+
               if (node.type === 'arrow') {
                 return [
                   {
                     id: node.id,
                     point: node.start,
                     type: 'start' as const,
-                    width: 0,
-                    height: 0,
                   },
                   {
                     id: node.id,
                     point: node.end,
                     type: 'end' as const,
-                    width: 0,
-                    height: 0,
                   },
                 ];
               }
 
-              if (node.type !== 'free-hand') {
+              if (node.type === 'free-hand') {
                 return [
                   {
                     id: node.id,
-                    point: {
-                      x: node.x,
-                      y: node.y,
-                    },
-                    width: node.width,
-                    height: node.height,
+                    points: node.points,
                   },
                 ];
               }
 
-              return []
+              return [
+                {
+                  id: node.id,
+                  point: {
+                    x: node.x,
+                    y: node.y,
+                  },
+                  width: node.width,
+                  height: node.height,
+                },
+              ];
             });
 
           nodesModel.resizeNodes(resizedNodes);

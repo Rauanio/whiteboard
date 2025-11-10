@@ -34,7 +34,7 @@ export const useNodesDraggingViewModel = ({
 
         if (node.type === 'free-hand') {
           const movedPoints = node.points.map((p) => {
-            const point = Array.isArray(p) ? { x: p[0], y: p[1] } : p; // ✅ Приводим к объекту
+            const point = Array.isArray(p) ? { x: p[0], y: p[1] } : p;
             return addPoints(point, diff);
           });
           console.log(movedPoints, 'moved');

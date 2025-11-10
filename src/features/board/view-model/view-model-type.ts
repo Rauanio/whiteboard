@@ -2,7 +2,7 @@ import type { Point } from '../domain/point';
 import type { Rect } from '../domain/rect';
 import type { FreeHandPoints } from '../domain/svg';
 import type { WindowPosition } from '../model/window-position';
-import type { ResizeDirection } from '../ui/resizable-box';
+import type { ResizeDirection } from '../ui/resizable';
 
 interface ViewModelStickerNode {
   id: string;
@@ -15,9 +15,10 @@ interface ViewModelStickerNode {
   isSelected?: boolean;
   isEditing?: boolean;
   onTextChange?: (text: string) => void;
-  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
-  onMouseDown?: (e: React.MouseEvent<HTMLButtonElement>) => void;
-  onMouseUp?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  onClick?: (e: React.MouseEvent<SVGRectElement>) => void;
+  onMouseDown?: (e: React.MouseEvent<SVGRectElement>) => void;
+  onMouseUp?: (e: React.MouseEvent<SVGRectElement>) => void;
+  onHandleMouseDown?: (e: React.MouseEvent<SVGElement>, dir: ResizeDirection) => void;
 }
 
 type ViewModelRectangleNode = {
@@ -28,10 +29,10 @@ type ViewModelRectangleNode = {
   width: number;
   height: number;
   isSelected?: boolean;
-  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
-  onMouseDown?: (e: React.MouseEvent<HTMLButtonElement>) => void;
-  onHandleMouseDown?: (e: React.MouseEvent<HTMLDivElement>, dir: ResizeDirection) => void;
-  onMouseUp?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  onClick?: (e: React.MouseEvent<SVGRectElement>) => void;
+  onMouseDown?: (e: React.MouseEvent<SVGRectElement>) => void;
+  onHandleMouseDown?: (e: React.MouseEvent<SVGElement>, dir: ResizeDirection) => void;
+  onMouseUp?: (e: React.MouseEvent<SVGRectElement>) => void;
 };
 
 type ViewModelArrowNode = {
@@ -44,6 +45,7 @@ type ViewModelArrowNode = {
   onClick?: (e: React.MouseEvent<SVGPathElement>) => void;
   onMouseDown?: (e: React.MouseEvent<SVGPathElement>) => void;
   onMouseUp?: (e: React.MouseEvent<SVGPathElement>) => void;
+  onHandleMouseDown?: (e: React.MouseEvent<SVGElement>, dir: ResizeDirection) => void;
 };
 
 type ViewModelFreeHandNode = {
@@ -55,6 +57,7 @@ type ViewModelFreeHandNode = {
   onClick?: (e: React.MouseEvent<SVGPathElement>) => void;
   onMouseDown?: (e: React.MouseEvent<SVGPathElement>) => void;
   onMouseUp?: (e: React.MouseEvent<SVGPathElement>) => void;
+  onHandleMouseDown?: (e: React.MouseEvent<SVGElement>, dir: ResizeDirection) => void;
 };
 
 export type ViewModelNode =

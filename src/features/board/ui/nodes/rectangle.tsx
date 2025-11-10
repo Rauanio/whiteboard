@@ -1,8 +1,8 @@
 import clsx from 'clsx';
 import type { Rect } from '../../domain/rect';
 import type { Ref } from 'react';
-import { SelectionBox } from '../selection-box';
-import { ResizableBox, type ResizeDirection } from '../resizable-box';
+import { Selectable } from '../selectable';
+import type { ResizeDirection } from '../resizable';
 
 export function Rectangle({
   height,
@@ -19,25 +19,47 @@ export function Rectangle({
 }: Rect & {
   id?: string;
   isSelected?: boolean;
-  ref?: Ref<HTMLButtonElement>;
-  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
-  onMouseDown?: (e: React.MouseEvent<HTMLButtonElement>) => void;
-  onHandleMouseDown?: (e: React.MouseEvent<HTMLDivElement>, dir: ResizeDirection) => void;
-  onMouseUp?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  ref?: Ref<SVGSVGElement>;
+  onClick?: (e: React.MouseEvent<SVGRectElement>) => void;
+  onMouseDown?: (e: React.MouseEvent<SVGRectElement>) => void;
+  onHandleMouseDown?: (e: React.MouseEvent<SVGElement>, dir: ResizeDirection) => void;
+  onMouseUp?: (e: React.MouseEvent<SVGRectElement>) => void;
 }) {
   return (
-    <SelectionBox height={height} width={width} isSelected={isSelected} x={x} y={y}>
-      {isSelected && <ResizableBox onMouseDown={onHandleMouseDown} />}
-      <button
-        data-id={id}
-        ref={ref}
-        className={clsx(
-          'rounded-lg bg-white w-full cursor-move h-full border shadow-md border-gray-400'
+    <svg
+      ref={ref}
+      data-id={id}
+      className="absolute left-0 top-0 overflow-visible"
+      style={{ touchAction: 'none' }}
+    >
+      <g>
+        {isSelected && (
+          <Selectable
+            height={height}
+            width={width}
+            x={x}
+            y={y}
+            onHandleMouseDown={onHandleMouseDown}
+          />
         )}
-        onClick={onClick}
-        onMouseDown={onMouseDown}
-        onMouseUp={onMouseUp}
-      ></button>
-    </SelectionBox>
+
+        <rect
+          x={x}
+          y={y}
+          width={width}
+          height={height}
+          onMouseDown={onMouseDown}
+          fill="white"
+          stroke="#99a1af"
+          strokeWidth={2}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          rx={8}
+          onMouseUp={onMouseUp}
+          onClick={onClick}
+          className={clsx('cursor-move shadow-md')}
+        />
+      </g>
+    </svg>
   );
 }

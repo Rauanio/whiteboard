@@ -1,3 +1,5 @@
+// import { createRectFromFreeHandPoints } from '../../domain/rect';
+import { pointOnScreenToCanvas } from '../../domain/screen-to-canvas';
 import type { FreeHandPoints } from '../../domain/svg';
 import type { ViewModelProps } from '../view-model';
 import type { ViewModel } from '../view-model-type';
@@ -8,7 +10,12 @@ export interface AddFreeHandViewState {
   points: FreeHandPoints;
 }
 
-export const useAddFreeHandViewModel = ({ nodesModel, setViewState }: ViewModelProps) => {
+export const useAddFreeHandViewModel = ({
+  nodesModel,
+  setViewState,
+  windowPositionModel,
+  canvasRect,
+}: ViewModelProps) => {
   return (state: AddFreeHandViewState): ViewModel => {
     const newNodes = state.points
       ? [
@@ -24,30 +31,47 @@ export const useAddFreeHandViewModel = ({ nodesModel, setViewState }: ViewModelP
 
     return {
       nodes: newNodes,
-      layout: {
-        cursor: 'cursor-crosshair',
-      },
+      // layout: {
+      //   cursor: 'cursor-crosshair',
+      // },
       overlay: {
         onMouseDown: (e) => {
+          const point = pointOnScreenToCanvas(
+            {
+              x: e.clientX,
+              y: e.clientY,
+            },
+            windowPositionModel.position,
+            canvasRect
+          );
           setViewState({
             ...state,
-            points: [[e.pageX, e.pageY]],
+            points: [[point.x, point.y]],
           });
         },
       },
       window: {
         onMouseMove: (e) => {
           if (e.buttons !== 1) return;
+          const point = pointOnScreenToCanvas(
+            {
+              x: e.clientX,
+              y: e.clientY,
+            },
+            windowPositionModel.position,
+            canvasRect
+          );
+
           setViewState({
             ...state,
-            points: [...state.points, [e.pageX, e.pageY]],
+            points: [...state.points, [point.x, point.y]],
           });
         },
         onMouseUp: () => {
-          console.log('ON MOUSE UP !');
-          
-          nodesModel.addFreeHandNode(state.points);
-          setViewState(goToIdle());
+          nodesModel.addFreeHandNode({
+            points: state.points,
+          });
+          // setViewState(goToIdle());
         },
       },
       actions: {

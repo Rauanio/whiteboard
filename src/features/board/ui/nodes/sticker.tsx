@@ -1,7 +1,8 @@
 import clsx from 'clsx';
-import { useEffect, useLayoutEffect, useRef, useState, type Ref } from 'react';
-import { SelectionBox } from '../selection-box';
-import { ResizableBox } from '../resizable-box';
+import { useEffect, useRef, type Ref } from 'react';
+
+import { Selectable } from '../selectable';
+import type { ResizeDirection } from '../resizable';
 
 export function Sticker({
   id,
@@ -25,60 +26,93 @@ export function Sticker({
   y: number;
   width: number;
   height: number;
-  ref: Ref<HTMLButtonElement>;
+  ref: Ref<SVGSVGElement>;
   isSelected?: boolean;
   isEditing?: boolean;
   onTextChange?: (text: string) => void;
-  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
-  onMouseDown?: (e: React.MouseEvent<HTMLButtonElement>) => void;
-  onHandleMouseDown?: (e: React.MouseEvent<HTMLDivElement>) => void;
-  onMouseUp?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  onClick?: (e: React.MouseEvent<SVGRectElement>) => void;
+  onMouseDown?: (e: React.MouseEvent<SVGRectElement>) => void;
+  onHandleMouseDown?: (e: React.MouseEvent<SVGElement>, dir: ResizeDirection) => void;
+  onMouseUp?: (e: React.MouseEvent<SVGRectElement>) => void;
 }) {
   return (
-    <SelectionBox width={width} height={height} x={x} y={y} isSelected={isSelected}>
-      {isSelected && <ResizableBox onMouseDown={onHandleMouseDown} />}
-      <button
-        data-id={id}
-        ref={ref}
-        className={clsx(
-          'bg-yellow-300 cursor-move px-2 py-4 rounded-xs shadow-md w-full h-full'
+    <svg
+      ref={ref}
+      data-id={id}
+      className="absolute left-0 top-0 overflow-visible pointer-events-none "
+      style={{ touchAction: 'none' }}
+    >
+      <g>
+        {isSelected && (
+          <Selectable
+            height={height}
+            width={width}
+            x={x}
+            y={y}
+            onHandleMouseDown={onHandleMouseDown}
+          />
         )}
-        onClick={onClick}
-        onMouseDown={onMouseDown}
-        onMouseUp={onMouseUp}
-      >
+
+        <rect
+          x={x}
+          y={y}
+          width={width}
+          height={height}
+          onMouseDown={onMouseDown}
+          fill="#FFEA00"
+          rx={4}
+          onMouseUp={onMouseUp}
+          onClick={onClick}
+          className={clsx('cursor-move  pointer-events-auto')}
+        />
         <TextareaAutoSize
+          x={x}
+          y={y}
           value={text}
+          fHeight={height}
+          fWidth={width}
           onChange={onTextChange}
           isEditing={isEditing ?? false}
         />
-      </button>
-    </SelectionBox>
+      </g>
+    </svg>
   );
 }
 
 export const TextareaAutoSize = ({
   isEditing,
   value,
+  fWidth,
+  fHeight,
   onChange,
+  x,
+  y,
 }: {
   isEditing: boolean;
   value: string;
+  fWidth: number;
+  fHeight: number;
+  x: number;
+  y: number;
   onChange?: (value: string) => void;
 }) => {
   const ref = useRef<HTMLDivElement>(null);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
-  const [height, setHeight] = useState(0);
-  const [width, setWidth] = useState(0);
+  // const [height, setHeight] = useState(0);
+  // const [width, setWidth] = useState(0);
 
-  useLayoutEffect(() => {
-    if (!ref.current) return;
+  // console.log(ref.current);
 
-    const { scrollWidth, clientHeight } = ref.current;
+  // useLayoutEffect(() => {
+  //   if (!ref.current) return;
 
-    setHeight(clientHeight);
-    setWidth(scrollWidth);
-  }, [value, isEditing]);
+  //   const { scrollWidth, clientHeight } = ref.current;
+
+  //   console.log(clientHeight, scrollWidth);
+
+  //   setHeight(clientHeight);
+  //   setWidth(scrollWidth);
+  // }, [value, isEditing]);
 
   useEffect(() => {
     if (textAreaRef.current && isEditing) {
@@ -91,22 +125,28 @@ export const TextareaAutoSize = ({
   }, [isEditing]);
 
   return (
-    <div className="relative">
-      <div ref={ref} className={clsx('whitespace-pre-wrap', isEditing && 'opacity-0')}>
-        {value}
-      </div>
-      {isEditing && (
-        <textarea
-          ref={textAreaRef}
-          className="absolute top-0 left-0 resize-none overflow-hidden focus:outline-none "
-          value={value}
-          onChange={(e) => onChange?.(e.target.value)}
-          style={{
-            width: width + 2,
-            height: height + 2,
-          }}
-        />
+    <>
+      {!isEditing && (
+        <foreignObject x={x + 4} y={y + 4} width={fWidth - 8} height={fHeight - 8}>
+          <div
+            ref={ref}
+            className="text-center w-full h-full overflow-hidden break-words whitespace-pre-wrap select-none"
+          >
+            {value}
+          </div>
+        </foreignObject>
       )}
-    </div>
+
+      {isEditing && (
+        <foreignObject x={x + 4} y={y + 4} width={fWidth - 8} height={fHeight - 8}>
+          <textarea
+            ref={textAreaRef}
+            className="w-full h-full text-center resize-none overflow-hidden focus:outline-none "
+            value={value}
+            onChange={(e) => onChange?.(e.target.value)}
+          />
+        </foreignObject>
+      )}
+    </>
   );
 };

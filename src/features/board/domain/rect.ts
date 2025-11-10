@@ -25,6 +25,8 @@ export const createRectFromFreeHandPoints = (points: FreeHandPoints) => {
   const xs = points.map((p) => (Array.isArray(p) ? p[0] : p.x));
   const ys = points.map((p) => (Array.isArray(p) ? p[1] : p.y));
 
+  console.log(xs, ys);
+
   const minX = Math.min(...xs);
   const maxX = Math.max(...xs);
   const minY = Math.min(...ys);
