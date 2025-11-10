@@ -30,6 +30,13 @@ interface FreeHandNode extends NodeBase {
 
 export type Node = StickerNode | RectangleNode | ArrowNode | FreeHandNode;
 
+export interface NodeUpdatePosition {
+  id: string;
+  point?: Point;
+  points?: FreeHandPoints;
+  type?: 'start' | 'end';
+}
+
 export const useNodes = () => {
   const {
     state: nodes,
@@ -131,13 +138,7 @@ export const useNodes = () => {
     });
   };
 
-  const updateNodesPositions = (
-    positions: {
-      id: string;
-      point: Point;
-      type?: 'start' | 'end';
-    }[]
-  ) => {
+  const updateNodesPositions = (positions: NodeUpdatePosition[]) => {
     const record = Object.fromEntries(
       positions.map((p) => [`${p.id}${p.type ?? ''}`, p])
     );
@@ -161,10 +162,18 @@ export const useNodes = () => {
           }
         }
 
+        if (node.type === 'free-hand') {
+          const newPosition = record[node.id];
+
+          return { ...node, points: newPosition.points ?? [] };
+        }
+
         return node;
       })
     );
   };
+
+  console.log(nodes, 'nodes');
 
   const resizeNodes = (
     position: {

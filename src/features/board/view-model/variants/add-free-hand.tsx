@@ -17,6 +17,7 @@ export const useAddFreeHandViewModel = ({ nodesModel, setViewState }: ViewModelP
             id: 'drawing-free-fand',
             type: 'free-hand' as const,
             points: state.points,
+            noPointerEvents: true,
           },
         ]
       : nodesModel.nodes;
@@ -43,6 +44,8 @@ export const useAddFreeHandViewModel = ({ nodesModel, setViewState }: ViewModelP
           });
         },
         onMouseUp: () => {
+          console.log('ON MOUSE UP !');
+          
           nodesModel.addFreeHandNode(state.points);
           setViewState(goToIdle());
         },

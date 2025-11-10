@@ -1,5 +1,10 @@
 import { resolveRelativePoint, type Point } from '../../domain/point';
-import { createRectFromPoints, isRectsIntersecting, type Rect } from '../../domain/rect';
+import {
+  createRectFromFreeHandPoints,
+  createRectFromPoints,
+  isRectsIntersecting,
+  type Rect,
+} from '../../domain/rect';
 import { pointOnScreenToCanvas } from '../../domain/screen-to-canvas';
 import { selectNodes, type Selection } from '../../domain/selection';
 import { createRelativeBase } from '../decorators/resolve-relative';
@@ -33,6 +38,8 @@ export const useSelectionWindowViewModel = ({
               resolveRelativePoint(relativeBase, node.start),
               resolveRelativePoint(relativeBase, node.end)
             )
+          : node.type === 'free-hand'
+          ? createRectFromFreeHandPoints(node.points)
           : {
               x: node.x,
               y: node.y,

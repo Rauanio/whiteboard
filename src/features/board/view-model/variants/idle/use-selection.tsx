@@ -23,6 +23,8 @@ export const useSelection = ({ setViewState }: ViewModelProps) => {
     nodeId: string,
     e: React.MouseEvent
   ) => {
+    console.log(nodeId);
+
     if (e.ctrlKey || e.shiftKey) {
       selection(idleState, [nodeId], 'toggle');
     } else {

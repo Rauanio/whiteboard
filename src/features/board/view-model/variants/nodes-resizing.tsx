@@ -143,17 +143,21 @@ export const useNodesResizingViewModel = ({
                 ];
               }
 
-              return [
-                {
-                  id: node.id,
-                  point: {
-                    x: node.x,
-                    y: node.y,
+              if (node.type !== 'free-hand') {
+                return [
+                  {
+                    id: node.id,
+                    point: {
+                      x: node.x,
+                      y: node.y,
+                    },
+                    width: node.width,
+                    height: node.height,
                   },
-                  width: node.width,
-                  height: node.height,
-                },
-              ];
+                ];
+              }
+
+              return []
             });
 
           nodesModel.resizeNodes(resizedNodes);

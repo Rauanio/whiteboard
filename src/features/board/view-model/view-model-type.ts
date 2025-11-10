@@ -52,9 +52,9 @@ type ViewModelFreeHandNode = {
   points: FreeHandPoints;
   isSelected?: boolean;
   noPointerEvents?: boolean;
-  onClick?: (e: React.MouseEvent<SVGSVGElement>) => void;
-  onMouseDown?: (e: React.MouseEvent<SVGSVGElement>) => void;
-  onMouseUp?: (e: React.MouseEvent<SVGSVGElement>) => void;
+  onClick?: (e: React.MouseEvent<SVGPathElement>) => void;
+  onMouseDown?: (e: React.MouseEvent<SVGPathElement>) => void;
+  onMouseUp?: (e: React.MouseEvent<SVGPathElement>) => void;
 };
 
 export type ViewModelNode =

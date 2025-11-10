@@ -1,5 +1,6 @@
 import { addPoints, diffPoints, isRelativePoint, type Point } from '../../domain/point';
 import { pointOnScreenToCanvas } from '../../domain/screen-to-canvas';
+import type { NodeUpdatePosition } from '../../model/nodes';
 import type { ViewModelProps } from '../view-model';
 import type { ViewModel } from '../view-model-type';
 import { goToIdle } from './idle';
@@ -31,6 +32,20 @@ export const useNodesDraggingViewModel = ({
           };
         }
 
+        if (node.type === 'free-hand') {
+          const movedPoints = node.points.map((p) => {
+            const point = Array.isArray(p) ? { x: p[0], y: p[1] } : p; // ✅ Приводим к объекту
+            return addPoints(point, diff);
+          });
+          console.log(movedPoints, 'moved');
+
+          return {
+            ...node,
+            points: movedPoints,
+            isSelected: true,
+          };
+        }
+
         return {
           ...node,
           ...addPoints(node, diff),
@@ -43,6 +58,7 @@ export const useNodesDraggingViewModel = ({
 
   return (state: NodesDraggingViewState): ViewModel => {
     const nodes = getNodes(state);
+    console.log(state.nodesToDrag);
 
     return {
       nodes: nodes,
@@ -62,7 +78,7 @@ export const useNodesDraggingViewModel = ({
         onMouseUp: () => {
           const nodesToDrag = nodes
             .filter((node) => state.nodesToDrag.has(node.id))
-            .flatMap((node) => {
+            .flatMap((node): NodeUpdatePosition[] => {
               if (node.type === 'arrow') {
                 return [
                   {
@@ -74,6 +90,15 @@ export const useNodesDraggingViewModel = ({
                     id: node.id,
                     point: node.end,
                     type: 'end' as const,
+                  },
+                ];
+              }
+
+              if (node.type === 'free-hand') {
+                return [
+                  {
+                    id: node.id,
+                    points: node.points,
                   },
                 ];
               }

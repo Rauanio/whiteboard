@@ -43,7 +43,7 @@ export const Arrow = ({
       <path
         ref={ref}
         className={clsx(
-          ' cursor-move',
+          'cursor-move',
           noPointerEvents ? 'pointer-events-none' : 'pointer-events-auto'
         )}
         stroke="black"

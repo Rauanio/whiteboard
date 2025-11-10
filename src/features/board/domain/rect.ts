@@ -1,4 +1,5 @@
 import type { Point } from './point';
+import type { FreeHandPoints } from './svg';
 
 export interface Rect {
   x: number;
@@ -15,6 +16,27 @@ export function createRectFromPoints(start: Point, end: Point): Rect {
     height: Math.abs(start.y - end.y),
   };
 }
+
+export const createRectFromFreeHandPoints = (points: FreeHandPoints) => {
+  if (points.length === 0) {
+    return { x: 0, y: 0, width: 0, height: 0 };
+  }
+
+  const xs = points.map((p) => (Array.isArray(p) ? p[0] : p.x));
+  const ys = points.map((p) => (Array.isArray(p) ? p[1] : p.y));
+
+  const minX = Math.min(...xs);
+  const maxX = Math.max(...xs);
+  const minY = Math.min(...ys);
+  const maxY = Math.max(...ys);
+
+  return {
+    x: minX,
+    y: minY,
+    width: maxX - minX,
+    height: maxY - minY,
+  };
+};
 
 export function isPointInRect(point: Point, rect: Rect) {
   return (
