@@ -52,7 +52,7 @@ export const Resizable = (props: ResizableProps) => {
   };
 
   return (
-    <>
+    <g>
       {handles.map(({ dir, x, y }) =>
         type === 'default' ? (
           <rect
@@ -83,6 +83,6 @@ export const Resizable = (props: ResizableProps) => {
           />
         )
       )}
-    </>
+    </g>
   );
 };

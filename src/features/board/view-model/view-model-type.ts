@@ -49,6 +49,20 @@ type ViewModelCircleNode = {
   onMouseUp?: (e: React.MouseEvent<SVGEllipseElement>) => void;
 };
 
+type ViewModelDiamondNode = {
+  id: string;
+  type: 'diamond';
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  isSelected?: boolean;
+  onClick?: (e: React.MouseEvent<SVGPolygonElement>) => void;
+  onMouseDown?: (e: React.MouseEvent<SVGPolygonElement>) => void;
+  onHandleMouseDown?: (e: React.MouseEvent<SVGElement>, dir: ResizeDirection) => void;
+  onMouseUp?: (e: React.MouseEvent<SVGPolygonElement>) => void;
+};
+
 type ViewModelArrowNode = {
   id: string;
   type: 'arrow';
@@ -78,6 +92,7 @@ export type ViewModelNode =
   | ViewModelStickerNode
   | ViewModelRectangleNode
   | ViewModelCircleNode
+  | ViewModelDiamondNode
   | ViewModelFreeHandNode
   | ViewModelArrowNode;
 
@@ -109,6 +124,7 @@ export interface ViewModel {
     addSticker?: ViewModelAction;
     addRectangle?: ViewModelAction;
     addCircle?: ViewModelAction;
+    addDiamond?: ViewModelAction
     addArrow?: ViewModelAction;
     addFreeHand?: ViewModelAction;
     canvasDragging?: ViewModelAction;

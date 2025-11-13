@@ -31,47 +31,6 @@ export const useNodesResizingViewModel = ({
   const getNodes = (state: NodesResizingViewState) => {
     return nodesModel.nodes.map((node) => {
       const diff = diffPoints(state.startPoint, state.endPoint);
-      if (
-        node.id === state.nodeId &&
-        (node.type === 'rectangle' || node.type === 'sticker' || node.type === 'circle')
-      ) {
-        let newWidth = state.initialWidth;
-        let newHeight = state.initialHeight;
-        let newX = state.initialX;
-        let newY = state.initialY;
-
-        switch (state.direction) {
-          case 'bottom-right':
-            newWidth = state.initialWidth + diff.x;
-            newHeight = state.initialHeight + diff.y;
-            break;
-          case 'bottom-left':
-            newWidth = state.initialWidth - diff.x;
-            newHeight = state.initialHeight + diff.y;
-            newX = state.initialX + diff.x;
-            break;
-          case 'top-right':
-            newWidth = state.initialWidth + diff.x;
-            newHeight = state.initialHeight - diff.y;
-            newY = state.initialY + diff.y;
-            break;
-          case 'top-left':
-            newWidth = state.initialWidth - diff.x;
-            newHeight = state.initialHeight - diff.y;
-            newX = state.initialX + diff.x;
-            newY = state.initialY + diff.y;
-            break;
-        }
-
-        return {
-          ...node,
-          width: Math.max(node.type === 'sticker' ? 67 : 30, newWidth),
-          height: Math.max(node.type === 'sticker' ? 56 : 30, newHeight),
-          x: newX,
-          y: newY,
-          isSelected: true,
-        };
-      }
 
       if (node.id === state.nodeId && node.type === 'arrow') {
         if (state.direction === 'start') {
@@ -154,13 +113,51 @@ export const useNodesResizingViewModel = ({
         };
       }
 
+      // For other node shapes
+      if (node.id === state.nodeId) {
+        let newWidth = state.initialWidth;
+        let newHeight = state.initialHeight;
+        let newX = state.initialX;
+        let newY = state.initialY;
+
+        switch (state.direction) {
+          case 'bottom-right':
+            newWidth = state.initialWidth + diff.x;
+            newHeight = state.initialHeight + diff.y;
+            break;
+          case 'bottom-left':
+            newWidth = state.initialWidth - diff.x;
+            newHeight = state.initialHeight + diff.y;
+            newX = state.initialX + diff.x;
+            break;
+          case 'top-right':
+            newWidth = state.initialWidth + diff.x;
+            newHeight = state.initialHeight - diff.y;
+            newY = state.initialY + diff.y;
+            break;
+          case 'top-left':
+            newWidth = state.initialWidth - diff.x;
+            newHeight = state.initialHeight - diff.y;
+            newX = state.initialX + diff.x;
+            newY = state.initialY + diff.y;
+            break;
+        }
+
+        return {
+          ...node,
+          width: Math.max(node.type === 'sticker' ? 67 : 30, newWidth),
+          height: Math.max(node.type === 'sticker' ? 56 : 30, newHeight),
+          x: newX,
+          y: newY,
+          isSelected: true,
+        };
+      }
+
       return node;
     });
   };
   return (state: NodesResizingViewState): ViewModel => {
     const nodes = getNodes(state);
-
-    console.log(nodes);
 
     return {
       nodes,

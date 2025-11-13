@@ -1,4 +1,3 @@
-import clsx from 'clsx';
 import type { Rect } from '../../domain/rect';
 import type { Ref } from 'react';
 import { Selectable } from '../selectable';
@@ -25,9 +24,16 @@ export function Rectangle({
   onHandleMouseDown?: (e: React.MouseEvent<SVGElement>, dir: ResizeDirection) => void;
   onMouseUp?: (e: React.MouseEvent<SVGRectElement>) => void;
 }) {
+  const cx = x + width / 2;
+  const cy = y + height / 2;
+
   return (
-    <svg ref={ref} data-id={id} className="absolute left-0 top-0 overflow-visible">
-      <g>
+    <svg
+      ref={ref}
+      data-id={id}
+      className="absolute left-0 top-0 pointer-events-none overflow-visible z-1"
+    >
+      <g transform={`rotate(0 ${cx} ${cy})`}>
         {isSelected && (
           <Selectable
             height={height}
@@ -52,7 +58,7 @@ export function Rectangle({
           onMouseDown={onMouseDown}
           onMouseUp={onMouseUp}
           onClick={onClick}
-          className={clsx('cursor-move shadow-md')}
+          className={'cursor-move pointer-events-auto'}
         />
       </g>
     </svg>

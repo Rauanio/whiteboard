@@ -21,6 +21,10 @@ interface CircleNode extends NodeBase, Rect {
   type: 'circle';
 }
 
+interface DiamondNode extends NodeBase, Rect {
+  type: 'diamond';
+}
+
 interface ArrowNode extends NodeBase {
   type: 'arrow';
   start: Point;
@@ -32,7 +36,13 @@ interface FreeHandNode extends NodeBase {
   points: FreeHandPoints;
 }
 
-export type Node = StickerNode | RectangleNode | CircleNode | ArrowNode | FreeHandNode;
+export type Node =
+  | StickerNode
+  | RectangleNode
+  | DiamondNode
+  | CircleNode
+  | ArrowNode
+  | FreeHandNode;
 
 export interface NodeUpdatePosition {
   id: string;
@@ -73,6 +83,14 @@ export const useNodes = () => {
       height: 100,
       width: 100,
       x: 500,
+      y: 200,
+    },
+    {
+      id: '3',
+      type: 'diamond',
+      height: 100,
+      width: 100,
+      x: 750,
       y: 200,
     },
   ]);
@@ -128,6 +146,22 @@ export const useNodes = () => {
       {
         id: crypto.randomUUID(),
         type: 'circle',
+        ...data,
+      },
+    ]);
+  };
+
+  const addDiamondNode = (data: {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  }) => {
+    setNodes([
+      ...nodes,
+      {
+        id: crypto.randomUUID(),
+        type: 'diamond',
         ...data,
       },
     ]);
@@ -192,22 +226,17 @@ export const useNodes = () => {
             end: newEndPosition?.point ?? node.end,
           };
         }
-        if (
-          node.type === 'sticker' ||
-          node.type === 'rectangle' ||
-          node.type === 'circle'
-        ) {
-          const newPosition = record[node.id];
-          if (newPosition) {
-            return { ...node, ...newPosition.point };
-          }
-        }
 
         if (node.type === 'free-hand') {
           const newPosition = record[node.id];
           if (newPosition) {
             return { ...node, points: newPosition.points ?? [] };
           }
+        }
+
+        const newPosition = record[node.id];
+        if (newPosition) {
+          return { ...node, ...newPosition.point };
         }
 
         return node;
@@ -231,11 +260,16 @@ export const useNodes = () => {
           };
         }
 
-        if (
-          node.type === 'sticker' ||
-          node.type === 'rectangle' ||
-          node.type === 'circle'
-        ) {
+        if (node.type === 'free-hand') {
+          const newPosition = record[node.id];
+
+          if (newPosition) {
+            return {
+              ...node,
+              points: newPosition.points ?? [],
+            };
+          }
+        } else {
           const newPosition = record[node.id];
 
           if (newPosition) {
@@ -244,17 +278,6 @@ export const useNodes = () => {
               ...newPosition.point,
               height: newPosition?.height ?? node.height,
               width: newPosition?.width ?? node.width,
-            };
-          }
-        }
-
-        if (node.type === 'free-hand') {
-          const newPosition = record[node.id];
-
-          if (newPosition) {
-            return {
-              ...node,
-              points: newPosition.points ?? [],
             };
           }
         }
@@ -268,6 +291,7 @@ export const useNodes = () => {
     nodes,
     addStickerNode,
     addRectangleNode,
+    addDiamondNode,
     addCircleNode,
     addArrowNode,
     addFreeHandNode,

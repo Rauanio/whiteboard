@@ -59,7 +59,11 @@ export function Actions({ actions }: { actions: ViewModel['actions'] }) {
       >
         <Circle />
       </ActionButton>
-      <ActionButton isActive={false} onClick={() => {}} hotKey={6}>
+      <ActionButton
+        isActive={actions?.addDiamond?.isActive}
+        onClick={actions?.addDiamond?.onClick}
+        hotKey={6}
+      >
         <Diamond />
       </ActionButton>
       <ActionButton

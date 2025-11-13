@@ -3,7 +3,7 @@ import type { Ref } from 'react';
 import { Selectable } from '../selectable';
 import type { ResizeDirection } from '../resizable';
 
-export function Circle({
+export function Diamond({
   height,
   width,
   x,
@@ -19,15 +19,17 @@ export function Circle({
   id?: string;
   isSelected?: boolean;
   ref?: Ref<SVGSVGElement>;
-  onClick?: (e: React.MouseEvent<SVGEllipseElement>) => void;
-  onMouseDown?: (e: React.MouseEvent<SVGEllipseElement>) => void;
+  onClick?: (e: React.MouseEvent<SVGPolygonElement>) => void;
+  onMouseDown?: (e: React.MouseEvent<SVGPolygonElement>) => void;
   onHandleMouseDown?: (e: React.MouseEvent<SVGElement>, dir: ResizeDirection) => void;
-  onMouseUp?: (e: React.MouseEvent<SVGEllipseElement>) => void;
+  onMouseUp?: (e: React.MouseEvent<SVGPolygonElement>) => void;
 }) {
-  const cx = x + width / 2;
-  const cy = y + height / 2;
-  const rx = width / 2;
-  const ry = height / 2;
+  const top = { x: x + width / 2, y: y };
+  const right = { x: x + width, y: y + height / 2 };
+  const bottom = { x: x + width / 2, y: y + height };
+  const left = { x: x, y: y + height / 2 };
+
+  const points = `${top.x},${top.y} ${right.x},${right.y} ${bottom.x},${bottom.y} ${left.x},${left.y}`;
 
   return (
     <svg
@@ -45,11 +47,8 @@ export function Circle({
             onHandleMouseDown={onHandleMouseDown}
           />
         )}
-        <ellipse
-          rx={rx}
-          ry={ry}
-          cy={cy}
-          cx={cx}
+        <polygon
+          points={points}
           fill="white"
           stroke="#99a1af"
           strokeWidth={2}

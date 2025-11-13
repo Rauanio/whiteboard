@@ -45,7 +45,7 @@ export const FreeHand = ({
     <svg
       ref={ref}
       data-id={id}
-      className="absolute left-0 top-0 overflow-visible"
+      className="absolute left-0 top-0 pointer-events-none overflow-visible z-1"
       style={{ touchAction: 'none' }}
     >
       <g>
