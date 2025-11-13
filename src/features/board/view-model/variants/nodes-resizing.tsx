@@ -3,7 +3,6 @@ import { createRectFromFreeHandPoints } from '../../domain/rect';
 import { pointOnScreenToCanvas } from '../../domain/screen-to-canvas';
 import type { NodeUpdateResizing } from '../../model/nodes';
 import type { ResizeDirection } from '../../ui/resizable';
-import type { ArrowResizeDirection } from '../../ui/resizable-arrow';
 import type { ViewModelProps } from '../view-model';
 import type { ViewModel } from '../view-model-type';
 import { goToIdle } from './idle';
@@ -12,7 +11,7 @@ export interface NodesResizingViewState {
   type: 'nodes-resizing';
   startPoint: Point;
   endPoint: Point;
-  direction: ResizeDirection | ArrowResizeDirection;
+  direction: ResizeDirection;
   nodeId: string;
   initialWidth: number;
   initialHeight: number;
@@ -27,13 +26,14 @@ export const useNodesResizingViewModel = ({
   canvasRect,
   setViewState,
   windowPositionModel,
+  lockActions,
 }: ViewModelProps) => {
   const getNodes = (state: NodesResizingViewState) => {
     return nodesModel.nodes.map((node) => {
       const diff = diffPoints(state.startPoint, state.endPoint);
       if (
         node.id === state.nodeId &&
-        (node.type === 'rectangle' || node.type === 'sticker')
+        (node.type === 'rectangle' || node.type === 'sticker' || node.type === 'circle')
       ) {
         let newWidth = state.initialWidth;
         let newHeight = state.initialHeight;
@@ -160,6 +160,8 @@ export const useNodesResizingViewModel = ({
   return (state: NodesResizingViewState): ViewModel => {
     const nodes = getNodes(state);
 
+    console.log(nodes);
+
     return {
       nodes,
       window: {
@@ -228,6 +230,9 @@ export const useNodesResizingViewModel = ({
           isActive: true,
           onClick: () => setViewState(goToIdle()),
         },
+        lockActions: {
+          isActive: lockActions.lock,
+        },
       },
     };
   };
@@ -242,7 +247,7 @@ export const goToNodesResizing = ({
   initialEnd,
   initialStart,
 }: {
-  direction: ResizeDirection | ArrowResizeDirection;
+  direction: ResizeDirection;
   nodeId: string;
   startPoint: Point;
   endPoint: Point;

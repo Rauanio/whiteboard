@@ -39,11 +39,13 @@ import {
   type AddFreeHandViewState,
 } from './variants/add-free-hand';
 import type { LockActionsModel } from '../model/lock-actions';
+import { useAddCircleViewModel, type AddCircleViewState } from './variants/add-circle';
 
 type ViewState =
   | IdleViewState
   | AddStickerViewState
   | AddRectangleViewState
+  | AddCircleViewState
   | AddArrowViewState
   | AddFreeHandViewState
   | EditStickerViewState
@@ -58,7 +60,7 @@ export interface ViewModelProps {
   canvasRect: CanvasRect | undefined;
   nodesDimensions: NodesDimensionsMap;
   windowPositionModel: WindowPositionModel;
-  lockActions: LockActionsModel
+  lockActions: LockActionsModel;
 }
 
 export const useViewModel = (props: Omit<ViewModelProps, 'setViewState'>) => {
@@ -74,6 +76,7 @@ export const useViewModel = (props: Omit<ViewModelProps, 'setViewState'>) => {
   const addArrowViewModel = useAddArrowViewModel(newProps);
   const editStickerViewModel = useEditStickerViewModel(newProps);
   const addRectangleViewModel = useAddRectangleViewModel(newProps);
+  const addCircleViewModel = useAddCircleViewModel(newProps);
   const addFreeHandViewModel = useAddFreeHandViewModel(newProps);
   const selectionWindowViewModel = useSelectionWindowViewModel(newProps);
   const nodesDraggingViewModel = useNodesDraggingViewModel(newProps);
@@ -96,6 +99,9 @@ export const useViewModel = (props: Omit<ViewModelProps, 'setViewState'>) => {
       break;
     case 'add-rectangle':
       viewModel = actionsDecorator(addRectangleViewModel(viewState));
+      break;
+    case 'add-circle':
+      viewModel = actionsDecorator(addCircleViewModel(viewState));
       break;
     case 'add-arrow':
       viewModel = actionsDecorator(addArrowViewModel(viewState));

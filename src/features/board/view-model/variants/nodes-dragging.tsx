@@ -17,6 +17,7 @@ export const useNodesDraggingViewModel = ({
   canvasRect,
   setViewState,
   windowPositionModel,
+  lockActions,
 }: ViewModelProps) => {
   const getNodes = (state: NodesDraggingViewState) => {
     return nodesModel.nodes.map((node) => {
@@ -37,7 +38,6 @@ export const useNodesDraggingViewModel = ({
             const point = Array.isArray(p) ? { x: p[0], y: p[1] } : p;
             return addPoints(point, diff);
           });
-          console.log(movedPoints, 'moved');
 
           return {
             ...node,
@@ -127,6 +127,9 @@ export const useNodesDraggingViewModel = ({
         idleState: {
           isActive: true,
           onClick: () => setViewState(goToIdle()),
+        },
+        lockActions: {
+          isActive: lockActions.lock,
         },
       },
     };

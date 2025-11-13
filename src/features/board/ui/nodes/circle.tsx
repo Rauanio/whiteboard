@@ -1,10 +1,9 @@
-import clsx from 'clsx';
 import type { Rect } from '../../domain/rect';
 import type { Ref } from 'react';
 import { Selectable } from '../selectable';
 import type { ResizeDirection } from '../resizable';
 
-export function Rectangle({
+export function Circle({
   height,
   width,
   x,
@@ -20,11 +19,16 @@ export function Rectangle({
   id?: string;
   isSelected?: boolean;
   ref?: Ref<SVGSVGElement>;
-  onClick?: (e: React.MouseEvent<SVGRectElement>) => void;
-  onMouseDown?: (e: React.MouseEvent<SVGRectElement>) => void;
+  onClick?: (e: React.MouseEvent<SVGEllipseElement>) => void;
+  onMouseDown?: (e: React.MouseEvent<SVGEllipseElement>) => void;
   onHandleMouseDown?: (e: React.MouseEvent<SVGElement>, dir: ResizeDirection) => void;
-  onMouseUp?: (e: React.MouseEvent<SVGRectElement>) => void;
+  onMouseUp?: (e: React.MouseEvent<SVGEllipseElement>) => void;
 }) {
+  const cx = x + width / 2;
+  const cy = y + height / 2;
+  const rx = width / 2;
+  const ry = height / 2;
+
   return (
     <svg ref={ref} data-id={id} className="absolute left-0 top-0 overflow-visible">
       <g>
@@ -37,22 +41,18 @@ export function Rectangle({
             onHandleMouseDown={onHandleMouseDown}
           />
         )}
-
-        <rect
-          x={x}
-          y={y}
-          width={width}
-          height={height}
-          rx={8}
+        <ellipse
+          rx={rx}
+          ry={ry}
+          cy={cy}
+          cx={cx}
           fill="white"
           stroke="#99a1af"
           strokeWidth={2}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          onMouseDown={onMouseDown}
           onMouseUp={onMouseUp}
           onClick={onClick}
-          className={clsx('cursor-move shadow-md')}
+          onMouseDown={onMouseDown}
+          className="cursor-move"
         />
       </g>
     </svg>

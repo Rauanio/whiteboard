@@ -8,7 +8,11 @@ export interface EditStickerViewState {
   newText?: string;
 }
 
-export const useEditStickerViewModel = ({ nodesModel, setViewState }: ViewModelProps) => {
+export const useEditStickerViewModel = ({
+  nodesModel,
+  setViewState,
+  lockActions,
+}: ViewModelProps) => {
   return (viewState: EditStickerViewState): ViewModel => ({
     nodes: nodesModel.nodes.map((node) => {
       if (node.id === viewState.stickerId && node.type === 'sticker') {
@@ -50,6 +54,9 @@ export const useEditStickerViewModel = ({ nodesModel, setViewState }: ViewModelP
       idleState: {
         isActive: true,
         onClick: () => setViewState(goToIdle()),
+      },
+      lockActions: {
+        isActive: lockActions.lock,
       },
     },
   });

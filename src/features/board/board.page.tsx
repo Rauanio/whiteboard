@@ -18,6 +18,7 @@ import { UndoRedoControls } from './ui/controls/undo-redo-controls';
 import { ZoomControls } from './ui/controls/zoom-controls';
 import { FreeHand } from './ui/nodes/free-hand';
 import { useLockActions } from './model/lock-actions';
+import { Circle } from './ui/nodes/circle';
 
 const BoardPage = () => {
   const nodesModel = useNodes();
@@ -70,6 +71,9 @@ const BoardPage = () => {
           }
           if (node.type === 'free-hand') {
             return <FreeHand key={node.id} ref={nodeRef} {...node} />;
+          }
+          if(node.type === 'circle') {
+            return <Circle key={node.id} ref={nodeRef} {...node} />
           }
         })}
         {viewModel.selectionWindow && <SelectionWindow {...viewModel.selectionWindow} />}

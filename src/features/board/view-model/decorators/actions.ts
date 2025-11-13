@@ -1,4 +1,5 @@
 import { goToAddArrow } from '../variants/add-arrow';
+import { goToAddCircle } from '../variants/add-circle';
 import { goToAddFreeHand } from '../variants/add-free-hand';
 import { goToAddRectangle } from '../variants/add-rectangle';
 import { goToAddSticker } from '../variants/add-sticker';
@@ -37,7 +38,7 @@ export const useActionsDecorator = ({ setViewState, lockActions }: ViewModelProp
     actions: {
       lockActions: {
         isActive: lockActions.lock,
-        onClick: () => lockActions.setLock(!lockActions.lock),
+        onClick: () => lockActions.setLock((prev) => !prev),
       },
       idleState: {
         isActive: false,
@@ -50,6 +51,10 @@ export const useActionsDecorator = ({ setViewState, lockActions }: ViewModelProp
       addRectangle: {
         isActive: false,
         onClick: () => setViewState(goToAddRectangle()),
+      },
+      addCircle: {
+        isActive: false,
+        onClick: () => setViewState(goToAddCircle()),
       },
       addArrow: {
         isActive: false,

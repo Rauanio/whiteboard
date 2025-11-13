@@ -17,6 +17,10 @@ interface RectangleNode extends NodeBase, Rect {
   type: 'rectangle';
 }
 
+interface CircleNode extends NodeBase, Rect {
+  type: 'circle';
+}
+
 interface ArrowNode extends NodeBase {
   type: 'arrow';
   start: Point;
@@ -28,7 +32,7 @@ interface FreeHandNode extends NodeBase {
   points: FreeHandPoints;
 }
 
-export type Node = StickerNode | RectangleNode | ArrowNode | FreeHandNode;
+export type Node = StickerNode | RectangleNode | CircleNode | ArrowNode | FreeHandNode;
 
 export interface NodeUpdatePosition {
   id: string;
@@ -62,6 +66,14 @@ export const useNodes = () => {
       width: 200,
       x: 100,
       y: 100,
+    },
+    {
+      id: '2',
+      type: 'circle',
+      height: 100,
+      width: 100,
+      x: 500,
+      y: 200,
     },
   ]);
 
@@ -105,6 +117,22 @@ export const useNodes = () => {
     ]);
   };
 
+  const addCircleNode = (data: {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  }) => {
+    setNodes([
+      ...nodes,
+      {
+        id: crypto.randomUUID(),
+        type: 'circle',
+        ...data,
+      },
+    ]);
+  };
+
   const addArrowNode = (data: { start: Point; end: Point }) => {
     setNodes([
       ...nodes,
@@ -116,11 +144,7 @@ export const useNodes = () => {
     ]);
   };
 
-  const addFreeHandNode = (data: {
-    points: FreeHandPoints;
-    // width: number;
-    // height: number;
-  }) => {
+  const addFreeHandNode = (data: { points: FreeHandPoints }) => {
     setNodes([
       ...nodes,
       {
@@ -168,7 +192,11 @@ export const useNodes = () => {
             end: newEndPosition?.point ?? node.end,
           };
         }
-        if (node.type === 'sticker' || node.type === 'rectangle') {
+        if (
+          node.type === 'sticker' ||
+          node.type === 'rectangle' ||
+          node.type === 'circle'
+        ) {
           const newPosition = record[node.id];
           if (newPosition) {
             return { ...node, ...newPosition.point };
@@ -203,7 +231,11 @@ export const useNodes = () => {
           };
         }
 
-        if (node.type === 'sticker' || node.type === 'rectangle') {
+        if (
+          node.type === 'sticker' ||
+          node.type === 'rectangle' ||
+          node.type === 'circle'
+        ) {
           const newPosition = record[node.id];
 
           if (newPosition) {
@@ -232,12 +264,11 @@ export const useNodes = () => {
     );
   };
 
-  console.log(nodes);
-
   return {
     nodes,
     addStickerNode,
     addRectangleNode,
+    addCircleNode,
     addArrowNode,
     addFreeHandNode,
     updateStickerText,

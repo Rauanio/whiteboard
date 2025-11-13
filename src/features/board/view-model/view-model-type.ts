@@ -35,6 +35,20 @@ type ViewModelRectangleNode = {
   onMouseUp?: (e: React.MouseEvent<SVGRectElement>) => void;
 };
 
+type ViewModelCircleNode = {
+  id: string;
+  type: 'circle';
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  isSelected?: boolean;
+  onClick?: (e: React.MouseEvent<SVGEllipseElement>) => void;
+  onMouseDown?: (e: React.MouseEvent<SVGEllipseElement>) => void;
+  onHandleMouseDown?: (e: React.MouseEvent<SVGElement>, dir: ResizeDirection) => void;
+  onMouseUp?: (e: React.MouseEvent<SVGEllipseElement>) => void;
+};
+
 type ViewModelArrowNode = {
   id: string;
   type: 'arrow';
@@ -63,6 +77,7 @@ type ViewModelFreeHandNode = {
 export type ViewModelNode =
   | ViewModelStickerNode
   | ViewModelRectangleNode
+  | ViewModelCircleNode
   | ViewModelFreeHandNode
   | ViewModelArrowNode;
 
@@ -89,10 +104,11 @@ export interface ViewModel {
     onMouseWheel?: (e: WheelEvent) => void;
   };
   actions?: {
-    lockActions?: ViewModelAction
+    lockActions?: ViewModelAction;
     idleState?: ViewModelAction;
     addSticker?: ViewModelAction;
     addRectangle?: ViewModelAction;
+    addCircle?: ViewModelAction;
     addArrow?: ViewModelAction;
     addFreeHand?: ViewModelAction;
     canvasDragging?: ViewModelAction;

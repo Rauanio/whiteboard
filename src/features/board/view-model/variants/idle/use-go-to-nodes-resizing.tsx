@@ -43,18 +43,7 @@ export const useGoToNodesResizing = ({
             initialStart: node.start,
             initialEnd: node.end,
           };
-        } else if (node.type === 'rectangle' || node.type === 'sticker') {
-          nodeResizingState = {
-            nodeId: idleState.onMouseDown.nodeId,
-            direction: idleState.onMouseDown.direction,
-            startPoint: {
-              x: idleState.onMouseDown.x,
-              y: idleState.onMouseDown.y,
-            },
-            endPoint: currentPoint,
-            node,
-          };
-        } else {
+        } else if (node.type === 'free-hand') {
           const rect = createRectFromFreeHandPoints(node.points);
 
           nodeResizingState = {
@@ -66,6 +55,17 @@ export const useGoToNodesResizing = ({
             },
             endPoint: currentPoint,
             node: rect,
+          };
+        } else {
+          nodeResizingState = {
+            nodeId: idleState.onMouseDown.nodeId,
+            direction: idleState.onMouseDown.direction,
+            startPoint: {
+              x: idleState.onMouseDown.x,
+              y: idleState.onMouseDown.y,
+            },
+            endPoint: currentPoint,
+            node,
           };
         }
 
