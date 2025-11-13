@@ -62,3 +62,27 @@ export function getDoubleHandles(
     { dir: 'end' as const, x: end.x, y: end.y },
   ];
 }
+
+export function flipDirection(
+  direction: DefaultResizeDirection,
+  axis: 'x' | 'y'
+): DefaultResizeDirection {
+  const horizontalFlip: Record<DefaultResizeDirection, DefaultResizeDirection> = {
+    'top-left': 'top-right',
+    'top-right': 'top-left',
+    'bottom-left': 'bottom-right',
+    'bottom-right': 'bottom-left',
+  };
+
+  const verticalFlip: Record<DefaultResizeDirection, DefaultResizeDirection> = {
+    'top-left': 'bottom-left',
+    'bottom-left': 'top-left',
+    'top-right': 'bottom-right',
+    'bottom-right': 'top-right',
+  };
+
+  if (axis === 'x') return horizontalFlip[direction];
+  if (axis === 'y') return verticalFlip[direction];
+
+  return direction;
+}

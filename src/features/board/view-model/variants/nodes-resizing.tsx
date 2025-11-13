@@ -115,6 +115,9 @@ export const useNodesResizingViewModel = ({
 
       // For other node shapes
       if (node.id === state.nodeId) {
+        const minWidth = node.type === 'sticker' ? 67 : 30;
+        const minHeight = node.type === 'sticker' ? 56 : 30;
+
         let newWidth = state.initialWidth;
         let newHeight = state.initialHeight;
         let newX = state.initialX;
@@ -122,31 +125,46 @@ export const useNodesResizingViewModel = ({
 
         switch (state.direction) {
           case 'bottom-right':
-            newWidth = state.initialWidth + diff.x;
-            newHeight = state.initialHeight + diff.y;
+            newWidth += diff.x;
+            newHeight += diff.y;
             break;
           case 'bottom-left':
-            newWidth = state.initialWidth - diff.x;
-            newHeight = state.initialHeight + diff.y;
-            newX = state.initialX + diff.x;
+            newWidth -= diff.x;
+            newHeight += diff.y;
+            newX += diff.x;
             break;
           case 'top-right':
-            newWidth = state.initialWidth + diff.x;
-            newHeight = state.initialHeight - diff.y;
-            newY = state.initialY + diff.y;
+            newWidth += diff.x;
+            newHeight -= diff.y;
+            newY += diff.y;
             break;
           case 'top-left':
-            newWidth = state.initialWidth - diff.x;
-            newHeight = state.initialHeight - diff.y;
-            newX = state.initialX + diff.x;
-            newY = state.initialY + diff.y;
+            newWidth -= diff.x;
+            newHeight -= diff.y;
+            newX += diff.x;
+            newY += diff.y;
             break;
+        }
+
+        // Ограничения размеров + компенсация смещения
+        if (newWidth < minWidth) {
+          if (state.direction === 'bottom-left' || state.direction === 'top-left') {
+            newX -= minWidth - newWidth;
+          }
+          newWidth = minWidth;
+        }
+
+        if (newHeight < minHeight) {
+          if (state.direction === 'top-left' || state.direction === 'top-right') {
+            newY -= minHeight - newHeight;
+          }
+          newHeight = minHeight;
         }
 
         return {
           ...node,
-          width: Math.max(node.type === 'sticker' ? 67 : 30, newWidth),
-          height: Math.max(node.type === 'sticker' ? 56 : 30, newHeight),
+          width: newWidth,
+          height: newHeight,
           x: newX,
           y: newY,
           isSelected: true,
