@@ -9,7 +9,9 @@ import type { ViewModel } from '../view-model-type';
 
 export function createRelativeBase(nodes: Node[]): RelativeBase {
   const base = Object.fromEntries(
-    nodes.filter((node) => node.type !== 'arrow').map((node) => [node.id, node])
+    nodes
+      .filter((node) => node.type !== 'arrow' && node.type !== 'free-hand')
+      .map((node) => [node.id, node])
   );
 
   return base;

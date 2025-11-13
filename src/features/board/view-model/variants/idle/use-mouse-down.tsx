@@ -1,7 +1,7 @@
 import { pointOnScreenToCanvas } from '@/features/board/domain/screen-to-canvas';
 import type { IdleViewState } from '../idle';
 import type { ViewModelProps } from '../../view-model';
-import type { ResizeDirection } from '@/features/board/ui/resizable-box';
+import type { ResizeDirection } from '@/features/board/ui/resizable';
 
 export const useMouseDown = ({
   setViewState,
