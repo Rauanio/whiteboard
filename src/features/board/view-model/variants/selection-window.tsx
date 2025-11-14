@@ -34,8 +34,6 @@ export const useSelectionWindowViewModel = ({
     return nodesModel.nodes.map((node) => {
       const nodeDimensions = nodesDimensions[node.id];
 
-      console.log(nodeDimensions, node.id, 'nodeD');
-
       const nodeRect =
         node.type === 'arrow'
           ? createRectFromPoints(

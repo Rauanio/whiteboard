@@ -2,6 +2,7 @@ import type { Rect } from '../../domain/rect';
 import type { Ref } from 'react';
 import { Selectable } from '../selectable';
 import type { ResizeDirection } from '../resizable';
+import type { NodeConfiguration } from '../../model/nodes';
 
 export function Rectangle({
   height,
@@ -15,10 +16,12 @@ export function Rectangle({
   onMouseDown,
   onHandleMouseDown,
   onMouseUp,
+  configuration,
 }: Rect & {
   id?: string;
   isSelected?: boolean;
   ref?: Ref<SVGRectElement>;
+  configuration: NodeConfiguration;
   onClick?: (e: React.MouseEvent<SVGRectElement>) => void;
   onMouseDown?: (e: React.MouseEvent<SVGRectElement>) => void;
   onHandleMouseDown?: (e: React.MouseEvent<SVGElement>, dir: ResizeDirection) => void;
@@ -26,6 +29,8 @@ export function Rectangle({
 }) {
   const cx = x + width / 2;
   const cy = y + height / 2;
+
+  console.log(configuration, 'conf');
 
   return (
     <svg className="absolute left-0 top-0 pointer-events-none overflow-visible">
@@ -50,7 +55,7 @@ export function Rectangle({
           rx={8}
           fill="white"
           stroke="#99a1af"
-          strokeWidth={2}
+          strokeWidth={configuration.stroke === 'dashed' ? 5 : 2}
           strokeLinecap="round"
           strokeLinejoin="round"
           onMouseDown={onMouseDown}

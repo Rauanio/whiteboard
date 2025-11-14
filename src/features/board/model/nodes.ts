@@ -3,9 +3,14 @@ import { type Point } from '../domain/point';
 import { useStateHistory } from './history';
 import type { FreeHandPoints } from '../domain/svg';
 
+export interface NodeConfiguration {
+  stroke: 'solid' | 'dashed' | 'dotted';
+}
+
 interface NodeBase {
   id: string;
   type: string;
+  configuration: NodeConfiguration;
 }
 
 interface StickerNode extends NodeBase, Rect {
@@ -72,6 +77,7 @@ export const useNodes = () => {
     {
       id: '1',
       type: 'rectangle',
+      configuration: { stroke: 'solid' },
       height: 200,
       width: 200,
       x: 100,
@@ -80,6 +86,7 @@ export const useNodes = () => {
     {
       id: '2',
       type: 'circle',
+      configuration: { stroke: 'solid' },
       height: 100,
       width: 100,
       x: 500,
@@ -88,6 +95,7 @@ export const useNodes = () => {
     {
       id: '3',
       type: 'diamond',
+      configuration: { stroke: 'solid' },
       height: 100,
       width: 100,
       x: 750,
@@ -107,6 +115,9 @@ export const useNodes = () => {
       {
         id: crypto.randomUUID(),
         type: 'sticker',
+        configuration: {
+          stroke: 'solid',
+        },
         ...data,
       },
     ]);
@@ -130,6 +141,7 @@ export const useNodes = () => {
       {
         id: crypto.randomUUID(),
         type: 'rectangle',
+        configuration: { stroke: 'solid' },
         ...data,
       },
     ]);
@@ -146,6 +158,7 @@ export const useNodes = () => {
       {
         id: crypto.randomUUID(),
         type: 'circle',
+        configuration: { stroke: 'solid' },
         ...data,
       },
     ]);
@@ -162,6 +175,7 @@ export const useNodes = () => {
       {
         id: crypto.randomUUID(),
         type: 'diamond',
+        configuration: { stroke: 'solid' },
         ...data,
       },
     ]);
@@ -173,10 +187,13 @@ export const useNodes = () => {
       {
         id: crypto.randomUUID(),
         type: 'arrow',
+        configuration: { stroke: 'solid' },
         ...data,
       },
     ]);
   };
+
+  console.log(nodes, 'nodes');
 
   const addFreeHandNode = (data: { points: FreeHandPoints }) => {
     setNodes([
@@ -184,6 +201,7 @@ export const useNodes = () => {
       {
         id: crypto.randomUUID(),
         type: 'free-hand',
+        configuration: { stroke: 'solid' },
         ...data,
       },
     ]);
@@ -207,6 +225,15 @@ export const useNodes = () => {
         (node) => !ids.includes(node.id) && !arrowRelativeIds.includes(node.id)
       );
     });
+  };
+
+  const updateNodesConfiguration = (
+    ids: string[],
+    configurator: (node: Node) => Node
+  ) => {
+    setNodes((prev) =>
+      prev.map((node) => (ids.includes(node.id) ? configurator(node) : node))
+    );
   };
 
   const updateNodesPositions = (positions: NodeUpdatePosition[]) => {
@@ -297,6 +324,7 @@ export const useNodes = () => {
     addFreeHandNode,
     updateStickerText,
     deleteNodes,
+    updateNodesConfiguration,
     updateNodesPositions,
     resizeNodes,
     undo,

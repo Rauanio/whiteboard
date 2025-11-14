@@ -21,10 +21,7 @@ export const Arrow = ({
   noPointerEvents?: boolean;
   onClick?: (e: React.MouseEvent<SVGPathElement>) => void;
   onMouseDown?: (e: React.MouseEvent<SVGPathElement>) => void;
-  onHandleMouseDown?: (
-    e: React.MouseEvent<SVGElement>,
-    dir: ResizeDirection
-  ) => void;
+  onHandleMouseDown?: (e: React.MouseEvent<SVGElement>, dir: ResizeDirection) => void;
   onMouseUp?: (e: React.MouseEvent<SVGPathElement>) => void;
 }) => {
   return (
@@ -64,7 +61,7 @@ export const Arrow = ({
           onClick={onClick}
           onMouseDown={onMouseDown}
           onMouseUp={onMouseUp}
-          marker-end="url(#arrow)"
+          markerEnd="url(#arrow)"
         />
       </g>
 

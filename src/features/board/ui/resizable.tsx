@@ -73,6 +73,7 @@ export const Resizable = (props: ResizableProps) => {
           />
         ) : (
           <circle
+            key={dir}
             cx={x}
             cy={y}
             r={5}

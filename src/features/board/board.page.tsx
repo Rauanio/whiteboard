@@ -20,6 +20,8 @@ import { FreeHand } from './ui/nodes/free-hand';
 import { useLockActions } from './model/lock-actions';
 import { Circle } from './ui/nodes/circle';
 import { Diamond } from './ui/nodes/diamond';
+import { Hints } from './ui/hints';
+import { Configurator } from './ui/configurator';
 
 const BoardPage = () => {
   const nodesModel = useNodes();
@@ -83,9 +85,8 @@ const BoardPage = () => {
         {viewModel.selectionWindow && <SelectionWindow {...viewModel.selectionWindow} />}
       </Canvas>
       <Actions actions={viewModel.actions} />
-      <div className="absolute top-16 left-1/2 -translate-x-1/2 pointer-events-none select-none">
-        <p className="text-muted-foreground text-xs">{viewModel.hints}</p>
-      </div>
+      {viewModel.configurator && <Configurator configuratorType={viewModel.configurator} />}
+      {viewModel.hints && <Hints hints={viewModel.hints} />}
       <div className="absolute bottom-4 right-4 flex gap-3">
         <UndoRedoControls
           undo={nodesModel.undo}

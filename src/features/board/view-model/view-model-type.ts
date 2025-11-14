@@ -4,6 +4,7 @@ import type { Rect } from '../domain/rect';
 import type { FreeHandPoints } from '../domain/svg';
 import type { WindowPosition } from '../model/window-position';
 import type { ResizeDirection } from '../ui/resizable';
+import type { NodeConfiguration } from '../model/nodes';
 
 interface ViewModelStickerNode {
   id: string;
@@ -15,6 +16,7 @@ interface ViewModelStickerNode {
   text: string;
   isSelected?: boolean;
   isEditing?: boolean;
+  configuration: NodeConfiguration;
   onTextChange?: (text: string) => void;
   onClick?: (e: React.MouseEvent<SVGRectElement>) => void;
   onMouseDown?: (e: React.MouseEvent<SVGRectElement>) => void;
@@ -30,6 +32,7 @@ type ViewModelRectangleNode = {
   width: number;
   height: number;
   isSelected?: boolean;
+  configuration: NodeConfiguration;
   onClick?: (e: React.MouseEvent<SVGRectElement>) => void;
   onMouseDown?: (e: React.MouseEvent<SVGRectElement>) => void;
   onHandleMouseDown?: (e: React.MouseEvent<SVGElement>, dir: ResizeDirection) => void;
@@ -100,8 +103,14 @@ export type ViewModelNode =
 export interface ViewModel {
   nodes: ViewModelNode[];
   selectionWindow?: Rect;
+  configurator?: {
+    type: ViewModelNode['type'];
+    actions: {
+      setStrokeStyle?: (stroke: 'solid' | 'dashed' | 'dotted') => void;
+    };
+  };
   windowPosition?: WindowPosition;
-  hints?: ReactNode
+  hints?: ReactNode;
   layout?: {
     onKeyDown?: (e: React.KeyboardEvent<HTMLDivElement>) => void;
     cursor?: string;

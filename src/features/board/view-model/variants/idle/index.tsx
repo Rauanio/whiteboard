@@ -1,6 +1,6 @@
 import { type Point } from '../../../domain/point';
 import type { ViewModelProps } from '../../view-model';
-import type { ViewModel } from '../../view-model-type';
+import type { ViewModel, ViewModelNode } from '../../view-model-type';
 import { useDeleteSelectedNode } from './use-delete-selected-node';
 import { useGoToEditSticker } from './use-go-to-edit-sticker';
 import { useGoToSelectionWindow } from './use-go-to-selection-window';
@@ -39,6 +39,16 @@ export const useIdleViewModel = (props: ViewModelProps) => {
   const goToNodesResizing = useGoToNodesResizing(props);
   const mouseDown = useMouseDown(props);
 
+  const getConfiguratorType = (state: IdleViewState): ViewModelNode['type'] => {
+    const node = nodesModel.nodes.find((node) => state.selectedIds.has(node.id));
+
+    if (!node) {
+      return 'rectangle';
+    }
+
+    return node?.type;
+  };
+
   return (idleState: IdleViewState): ViewModel => ({
     nodes: nodesModel.nodes.map((node) => ({
       ...node,
@@ -54,7 +64,7 @@ export const useIdleViewModel = (props: ViewModelProps) => {
           return;
         }
 
-        console.log(idleState.onMouseDown?.type);
+        console.log(Array.from(idleState.selectedIds));
         const clickResult = goToEditSticker.handleGoToEditSticker(idleState, node.id, e);
         if (clickResult.preventNext) return;
 
@@ -65,6 +75,25 @@ export const useIdleViewModel = (props: ViewModelProps) => {
       onMouseDown: (e) => mouseDown.handleOverlayMouseDown(idleState, e),
       onMouseUp: () => selection.handleOverlayMouseUp(idleState),
     },
+    configurator:
+      idleState.selectedIds.size > 0
+        ? {
+            type: getConfiguratorType(idleState),
+            actions: {
+              setStrokeStyle: (stroke) => {
+                const selectedIds = Array.from(idleState.selectedIds);
+                nodesModel.updateNodesConfiguration(selectedIds, (node) => {
+                  return {
+                    ...node,
+                    configuration: {
+                      stroke,
+                    },
+                  };
+                });
+              },
+            },
+          }
+        : undefined,
     window: {
       onMouseMove: (e) => {
         goToSelectionWindow.handleWindowMouseMove(idleState, e);
