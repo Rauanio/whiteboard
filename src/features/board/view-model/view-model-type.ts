@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import type { Point } from '../domain/point';
 import type { Rect } from '../domain/rect';
 import type { FreeHandPoints } from '../domain/svg';
@@ -100,6 +101,7 @@ export interface ViewModel {
   nodes: ViewModelNode[];
   selectionWindow?: Rect;
   windowPosition?: WindowPosition;
+  hints?: ReactNode
   layout?: {
     onKeyDown?: (e: React.KeyboardEvent<HTMLDivElement>) => void;
     cursor?: string;
@@ -124,7 +126,7 @@ export interface ViewModel {
     addSticker?: ViewModelAction;
     addRectangle?: ViewModelAction;
     addCircle?: ViewModelAction;
-    addDiamond?: ViewModelAction
+    addDiamond?: ViewModelAction;
     addArrow?: ViewModelAction;
     addFreeHand?: ViewModelAction;
     canvasDragging?: ViewModelAction;

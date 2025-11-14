@@ -33,6 +33,7 @@ export const useAddFreeHandViewModel = ({
       layout: {
         cursor: 'cursor-pencil',
       },
+      hints: <>Click and drag, release when you're finished</>,
       overlay: {
         onMouseDown: (e) => {
           const point = pointOnScreenToCanvas(

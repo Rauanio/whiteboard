@@ -11,7 +11,7 @@ interface FreeHandProps {
   points: FreeHandPoints;
   isSelected?: boolean;
   noPointerEvents?: boolean;
-  ref?: Ref<SVGSVGElement>;
+  ref?: Ref<SVGPathElement>;
   onMouseDown?: (e: React.MouseEvent<SVGPathElement>) => void;
   onMouseMove?: (e: React.MouseEvent<SVGPathElement>) => void;
   onMouseUp?: (e: React.MouseEvent<SVGPathElement>) => void;
@@ -43,8 +43,6 @@ export const FreeHand = ({
 
   return (
     <svg
-      ref={ref}
-      data-id={id}
       className="absolute left-0 top-0 pointer-events-none overflow-visible z-1"
       style={{ touchAction: 'none' }}
     >
@@ -60,6 +58,8 @@ export const FreeHand = ({
         )}
 
         <path
+          ref={ref}
+          data-id={id}
           d={pathData}
           onMouseDown={onMouseDown}
           onMouseMove={onMouseMove}

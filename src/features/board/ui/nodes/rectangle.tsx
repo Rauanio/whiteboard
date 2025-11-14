@@ -18,7 +18,7 @@ export function Rectangle({
 }: Rect & {
   id?: string;
   isSelected?: boolean;
-  ref?: Ref<SVGSVGElement>;
+  ref?: Ref<SVGRectElement>;
   onClick?: (e: React.MouseEvent<SVGRectElement>) => void;
   onMouseDown?: (e: React.MouseEvent<SVGRectElement>) => void;
   onHandleMouseDown?: (e: React.MouseEvent<SVGElement>, dir: ResizeDirection) => void;
@@ -28,11 +28,7 @@ export function Rectangle({
   const cy = y + height / 2;
 
   return (
-    <svg
-      ref={ref}
-      data-id={id}
-      className="absolute left-0 top-0 pointer-events-none overflow-visible z-1"
-    >
+    <svg className="absolute left-0 top-0 pointer-events-none overflow-visible">
       <g transform={`rotate(0 ${cx} ${cy})`}>
         {isSelected && (
           <Selectable
@@ -45,6 +41,8 @@ export function Rectangle({
         )}
 
         <rect
+          ref={ref}
+          data-id={id}
           x={x}
           y={y}
           width={width}

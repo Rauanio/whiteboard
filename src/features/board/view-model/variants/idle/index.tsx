@@ -53,6 +53,8 @@ export const useIdleViewModel = (props: ViewModelProps) => {
         if (!mouseDown.getIsNodeMouseDown(idleState, node.id)) {
           return;
         }
+
+        console.log(idleState.onMouseDown?.type);
         const clickResult = goToEditSticker.handleGoToEditSticker(idleState, node.id, e);
         if (clickResult.preventNext) return;
 

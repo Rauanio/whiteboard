@@ -82,8 +82,10 @@ const BoardPage = () => {
         })}
         {viewModel.selectionWindow && <SelectionWindow {...viewModel.selectionWindow} />}
       </Canvas>
-
       <Actions actions={viewModel.actions} />
+      <div className="absolute top-16 left-1/2 -translate-x-1/2 pointer-events-none select-none">
+        <p className="text-muted-foreground text-xs">{viewModel.hints}</p>
+      </div>
       <div className="absolute bottom-4 right-4 flex gap-3">
         <UndoRedoControls
           undo={nodesModel.undo}

@@ -18,7 +18,7 @@ export function Diamond({
 }: Rect & {
   id?: string;
   isSelected?: boolean;
-  ref?: Ref<SVGSVGElement>;
+  ref?: Ref<SVGPolygonElement>;
   onClick?: (e: React.MouseEvent<SVGPolygonElement>) => void;
   onMouseDown?: (e: React.MouseEvent<SVGPolygonElement>) => void;
   onHandleMouseDown?: (e: React.MouseEvent<SVGElement>, dir: ResizeDirection) => void;
@@ -32,11 +32,7 @@ export function Diamond({
   const points = `${top.x},${top.y} ${right.x},${right.y} ${bottom.x},${bottom.y} ${left.x},${left.y}`;
 
   return (
-    <svg
-      ref={ref}
-      data-id={id}
-      className="absolute left-0 top-0 pointer-events-none overflow-visible z-1"
-    >
+    <svg className="absolute left-0 top-0 pointer-events-none overflow-visible">
       <g>
         {isSelected && (
           <Selectable
@@ -48,6 +44,8 @@ export function Diamond({
           />
         )}
         <polygon
+          ref={ref}
+          data-id={id}
           points={points}
           fill="white"
           stroke="#99a1af"

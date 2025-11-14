@@ -24,7 +24,7 @@ export function Sticker({
   y: number;
   width: number;
   height: number;
-  ref: Ref<SVGSVGElement>;
+  ref: Ref<SVGRectElement>;
   isSelected?: boolean;
   isEditing?: boolean;
   onTextChange?: (text: string) => void;
@@ -35,8 +35,6 @@ export function Sticker({
 }) {
   return (
     <svg
-      ref={ref}
-      data-id={id}
       className="absolute left-0 top-0 pointer-events-none overflow-visible z-1"
       style={{ touchAction: 'none' }}
     >
@@ -52,6 +50,8 @@ export function Sticker({
         )}
 
         <rect
+          ref={ref}
+          data-id={id}
           x={x}
           y={y}
           width={width}

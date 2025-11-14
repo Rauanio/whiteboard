@@ -1,3 +1,4 @@
+import { Kbd, KbdGroup } from '@/shared/ui/kit/kbd';
 import { resolveRelativePoint, type Point } from '../../domain/point';
 import {
   createRectFromFreeHandPoints,
@@ -33,6 +34,8 @@ export const useSelectionWindowViewModel = ({
     return nodesModel.nodes.map((node) => {
       const nodeDimensions = nodesDimensions[node.id];
 
+      console.log(nodeDimensions, node.id, 'nodeD');
+
       const nodeRect =
         node.type === 'arrow'
           ? createRectFromPoints(
@@ -65,6 +68,15 @@ export const useSelectionWindowViewModel = ({
     return {
       nodes: nodes,
       selectionWindow: rect,
+      hints: (
+        <>
+          Use{' '}
+          <KbdGroup>
+            <Kbd>Ctrl</Kbd>
+          </KbdGroup>{' '}
+          for multiple selection
+        </>
+      ),
       window: {
         onMouseMove: (e) => {
           const currentPoint = pointOnScreenToCanvas(

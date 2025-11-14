@@ -18,7 +18,7 @@ export function Circle({
 }: Rect & {
   id?: string;
   isSelected?: boolean;
-  ref?: Ref<SVGSVGElement>;
+  ref?: Ref<SVGEllipseElement>;
   onClick?: (e: React.MouseEvent<SVGEllipseElement>) => void;
   onMouseDown?: (e: React.MouseEvent<SVGEllipseElement>) => void;
   onHandleMouseDown?: (e: React.MouseEvent<SVGElement>, dir: ResizeDirection) => void;
@@ -30,11 +30,7 @@ export function Circle({
   const ry = height / 2;
 
   return (
-    <svg
-      ref={ref}
-      data-id={id}
-      className="absolute left-0 top-0 pointer-events-none overflow-visible z-1"
-    >
+    <svg className="absolute left-0 top-0 pointer-events-none overflow-visible">
       <g>
         {isSelected && (
           <Selectable
@@ -46,6 +42,8 @@ export function Circle({
           />
         )}
         <ellipse
+          ref={ref}
+          data-id={id}
           rx={rx}
           ry={ry}
           cy={cy}
