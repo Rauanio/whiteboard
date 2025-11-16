@@ -89,7 +89,7 @@ export const ZoomControls = ({
         <MinusIcon />
       </ControlButton>
       <DropdownMenu>
-        <DropdownMenuTrigger>
+        <DropdownMenuTrigger asChild>
           <ControlButton size={'default'}>{zoomPercentage}%</ControlButton>
         </DropdownMenuTrigger>
         <DropdownMenuContent>

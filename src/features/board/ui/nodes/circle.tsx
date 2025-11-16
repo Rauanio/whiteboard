@@ -2,6 +2,7 @@ import type { Rect } from '../../domain/rect';
 import type { Ref } from 'react';
 import { Selectable } from '../selectable';
 import type { ResizeDirection } from '../resizable';
+import type { NodeConfiguration } from '../../model/nodes';
 
 export function Circle({
   height,
@@ -15,15 +16,19 @@ export function Circle({
   onMouseDown,
   onHandleMouseDown,
   onMouseUp,
+  configuration,
 }: Rect & {
   id?: string;
   isSelected?: boolean;
   ref?: Ref<SVGEllipseElement>;
+  configuration: NodeConfiguration;
   onClick?: (e: React.MouseEvent<SVGEllipseElement>) => void;
   onMouseDown?: (e: React.MouseEvent<SVGEllipseElement>) => void;
   onHandleMouseDown?: (e: React.MouseEvent<SVGElement>, dir: ResizeDirection) => void;
   onMouseUp?: (e: React.MouseEvent<SVGEllipseElement>) => void;
 }) {
+  const { background, opacity, stroke, strokeWidth } = configuration;
+
   const cx = x + width / 2;
   const cy = y + height / 2;
   const rx = width / 2;
@@ -48,9 +53,10 @@ export function Circle({
           ry={ry}
           cy={cy}
           cx={cx}
-          fill="white"
-          stroke="#99a1af"
-          strokeWidth={2}
+          fill={background}
+          stroke={stroke}
+          fillOpacity={opacity[0] / 100}
+          strokeWidth={strokeWidth}
           onMouseUp={onMouseUp}
           onClick={onClick}
           onMouseDown={onMouseDown}

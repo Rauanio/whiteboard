@@ -30,7 +30,7 @@ export function Rectangle({
   const cx = x + width / 2;
   const cy = y + height / 2;
 
-  console.log(configuration, 'conf');
+  const { background, opacity, stroke, strokeWidth, edge } = configuration;
 
   return (
     <svg className="absolute left-0 top-0 pointer-events-none overflow-visible">
@@ -52,10 +52,11 @@ export function Rectangle({
           y={y}
           width={width}
           height={height}
-          rx={8}
-          fill="white"
-          stroke="#99a1af"
-          strokeWidth={configuration.stroke === 'dashed' ? 5 : 2}
+          rx={edge === 'round' ? 12 : 0}
+          fill={background}
+          fillOpacity={opacity[0] / 100}
+          stroke={stroke}
+          strokeWidth={strokeWidth}
           strokeLinecap="round"
           strokeLinejoin="round"
           onMouseDown={onMouseDown}

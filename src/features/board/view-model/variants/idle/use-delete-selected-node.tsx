@@ -4,7 +4,6 @@ import type { IdleViewState } from '../idle';
 export const useDeleteSelectedNode = ({ nodesModel, setViewState }: ViewModelProps) => {
   const deleteSelectedNodes = (idleState: IdleViewState) => {
     if (idleState.selectedIds.size > 0) {
-      console.log(idleState.selectedIds);
       const ids = Array.from(idleState.selectedIds);
       nodesModel.deleteNodes(ids);
       setViewState({

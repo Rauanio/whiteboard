@@ -2,9 +2,18 @@ import type { Rect } from '../domain/rect';
 import { type Point } from '../domain/point';
 import { useStateHistory } from './history';
 import type { FreeHandPoints } from '../domain/svg';
+import {
+  DEFAULT_ELEMENT_BACKGROUND_PICKS,
+  DEFAULT_ELEMENT_STROKE_PICKS,
+} from '@/shared/common/colors';
 
 export interface NodeConfiguration {
-  stroke: 'solid' | 'dashed' | 'dotted';
+  stroke: string;
+  background: string;
+  strokeStyle: 'solid' | 'dashed' | 'dotted';
+  strokeWidth: number;
+  opacity: number[];
+  edge: 'sharp' | 'round';
 }
 
 interface NodeBase {
@@ -65,6 +74,15 @@ export interface NodeUpdateResizing {
   type?: 'start' | 'end';
 }
 
+const configuration: NodeConfiguration = {
+  strokeStyle: 'solid',
+  strokeWidth: 2,
+  stroke: DEFAULT_ELEMENT_STROKE_PICKS[0],
+  background: DEFAULT_ELEMENT_BACKGROUND_PICKS[1],
+  opacity: [100],
+  edge: 'round',
+};
+
 export const useNodes = () => {
   const {
     state: nodes,
@@ -77,25 +95,25 @@ export const useNodes = () => {
     {
       id: '1',
       type: 'rectangle',
-      configuration: { stroke: 'solid' },
       height: 200,
       width: 200,
       x: 100,
       y: 100,
+      configuration,
     },
     {
       id: '2',
       type: 'circle',
-      configuration: { stroke: 'solid' },
       height: 100,
       width: 100,
       x: 500,
       y: 200,
+      configuration,
     },
     {
       id: '3',
       type: 'diamond',
-      configuration: { stroke: 'solid' },
+      configuration,
       height: 100,
       width: 100,
       x: 750,
@@ -115,9 +133,7 @@ export const useNodes = () => {
       {
         id: crypto.randomUUID(),
         type: 'sticker',
-        configuration: {
-          stroke: 'solid',
-        },
+        configuration,
         ...data,
       },
     ]);
@@ -141,7 +157,7 @@ export const useNodes = () => {
       {
         id: crypto.randomUUID(),
         type: 'rectangle',
-        configuration: { stroke: 'solid' },
+        configuration,
         ...data,
       },
     ]);
@@ -158,7 +174,7 @@ export const useNodes = () => {
       {
         id: crypto.randomUUID(),
         type: 'circle',
-        configuration: { stroke: 'solid' },
+        configuration,
         ...data,
       },
     ]);
@@ -175,7 +191,7 @@ export const useNodes = () => {
       {
         id: crypto.randomUUID(),
         type: 'diamond',
-        configuration: { stroke: 'solid' },
+        configuration,
         ...data,
       },
     ]);
@@ -187,13 +203,11 @@ export const useNodes = () => {
       {
         id: crypto.randomUUID(),
         type: 'arrow',
-        configuration: { stroke: 'solid' },
+        configuration,
         ...data,
       },
     ]);
   };
-
-  console.log(nodes, 'nodes');
 
   const addFreeHandNode = (data: { points: FreeHandPoints }) => {
     setNodes([
@@ -201,7 +215,7 @@ export const useNodes = () => {
       {
         id: crypto.randomUUID(),
         type: 'free-hand',
-        configuration: { stroke: 'solid' },
+        configuration,
         ...data,
       },
     ]);

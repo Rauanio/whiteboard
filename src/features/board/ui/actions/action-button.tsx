@@ -10,7 +10,7 @@ export function ActionButton({
   children: React.ReactNode;
   isActive?: boolean;
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
-  hotKey?: number;
+  hotKey?: string;
 }) {
   return (
     <Button

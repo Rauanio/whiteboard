@@ -2,6 +2,7 @@ import type { Rect } from '../../domain/rect';
 import type { Ref } from 'react';
 import { Selectable } from '../selectable';
 import type { ResizeDirection } from '../resizable';
+import type { NodeConfiguration } from '../../model/nodes';
 
 export function Diamond({
   height,
@@ -15,10 +16,12 @@ export function Diamond({
   onMouseDown,
   onHandleMouseDown,
   onMouseUp,
+  configuration,
 }: Rect & {
   id?: string;
   isSelected?: boolean;
   ref?: Ref<SVGPolygonElement>;
+  configuration: NodeConfiguration;
   onClick?: (e: React.MouseEvent<SVGPolygonElement>) => void;
   onMouseDown?: (e: React.MouseEvent<SVGPolygonElement>) => void;
   onHandleMouseDown?: (e: React.MouseEvent<SVGElement>, dir: ResizeDirection) => void;
@@ -30,6 +33,8 @@ export function Diamond({
   const left = { x: x, y: y + height / 2 };
 
   const points = `${top.x},${top.y} ${right.x},${right.y} ${bottom.x},${bottom.y} ${left.x},${left.y}`;
+
+  const { background, opacity, stroke, strokeWidth } = configuration;
 
   return (
     <svg className="absolute left-0 top-0 pointer-events-none overflow-visible">
@@ -47,9 +52,10 @@ export function Diamond({
           ref={ref}
           data-id={id}
           points={points}
-          fill="white"
-          stroke="#99a1af"
-          strokeWidth={2}
+          fill={background}
+          stroke={stroke}
+          strokeWidth={strokeWidth}
+          fillOpacity={opacity[0] / 100}
           onMouseUp={onMouseUp}
           onClick={onClick}
           onMouseDown={onMouseDown}

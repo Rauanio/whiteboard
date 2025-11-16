@@ -2,6 +2,7 @@ import type { Ref } from 'react';
 import { type Point } from '../../domain/point';
 import clsx from 'clsx';
 import { Resizable, type ResizeDirection } from '../resizable';
+import type { NodeConfiguration } from '../../model/nodes';
 
 export const Arrow = ({
   start,
@@ -9,6 +10,7 @@ export const Arrow = ({
   ref,
   isSelected,
   noPointerEvents,
+  configuration,
   onClick,
   onMouseDown,
   onHandleMouseDown,
@@ -19,6 +21,7 @@ export const Arrow = ({
   ref: Ref<SVGGElement>;
   isSelected?: boolean;
   noPointerEvents?: boolean;
+  configuration: NodeConfiguration;
   onClick?: (e: React.MouseEvent<SVGPathElement>) => void;
   onMouseDown?: (e: React.MouseEvent<SVGPathElement>) => void;
   onHandleMouseDown?: (e: React.MouseEvent<SVGElement>, dir: ResizeDirection) => void;

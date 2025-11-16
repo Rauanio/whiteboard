@@ -2,6 +2,7 @@ import {
   ArrowUpRight,
   Circle,
   Diamond,
+  Eraser,
   Hand,
   LockKeyholeOpen,
   MousePointer2,
@@ -25,63 +26,66 @@ export function Actions({ actions }: { actions: ViewModel['actions'] }) {
       </ActionButton>
       <Separator orientation="vertical" className="mx-1" />
       <ActionButton
-        hotKey={1}
         isActive={actions?.idleState?.isActive}
         onClick={actions?.idleState?.onClick}
+        hotKey={'1'}
       >
         <MousePointer2 />
       </ActionButton>
       <ActionButton
         isActive={actions?.canvasDragging?.isActive}
         onClick={actions?.canvasDragging?.onClick}
-        hotKey={2}
+        hotKey={'2'}
       >
         <Hand />
       </ActionButton>
       <ActionButton
         isActive={actions?.addSticker?.isActive}
         onClick={actions?.addSticker?.onClick}
-        hotKey={3}
+        hotKey={'3'}
       >
         <StickerIcon />
       </ActionButton>
       <ActionButton
         isActive={actions?.addRectangle?.isActive}
         onClick={actions?.addRectangle?.onClick}
-        hotKey={4}
+        hotKey={'4'}
       >
         <Square />
       </ActionButton>
       <ActionButton
         isActive={actions?.addCircle?.isActive}
         onClick={actions?.addCircle?.onClick}
-        hotKey={5}
+        hotKey={'5'}
       >
         <Circle />
       </ActionButton>
       <ActionButton
         isActive={actions?.addDiamond?.isActive}
         onClick={actions?.addDiamond?.onClick}
-        hotKey={6}
+        hotKey={'6'}
       >
         <Diamond />
       </ActionButton>
       <ActionButton
         isActive={actions?.addArrow?.isActive}
         onClick={actions?.addArrow?.onClick}
-        hotKey={7}
+        hotKey={'7'}
       >
         <ArrowUpRight />
       </ActionButton>
-      <ActionButton isActive={false} onClick={() => {}} hotKey={8}>
+      <ActionButton isActive={false} onClick={() => {}} hotKey={'8'}>
         <Type />
       </ActionButton>
       <ActionButton
         isActive={actions?.addFreeHand?.isActive}
         onClick={actions?.addFreeHand?.onClick}
-        hotKey={9}
+        hotKey={'9'}
       >
         <Pencil />
+      </ActionButton>
+      <ActionButton isActive={false} onClick={() => {}} hotKey={'0'}>
+        <Eraser />
       </ActionButton>
     </div>
   );

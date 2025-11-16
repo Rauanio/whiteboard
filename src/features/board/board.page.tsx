@@ -85,7 +85,7 @@ const BoardPage = () => {
         {viewModel.selectionWindow && <SelectionWindow {...viewModel.selectionWindow} />}
       </Canvas>
       <Actions actions={viewModel.actions} />
-      {viewModel.configurator && <Configurator configuratorType={viewModel.configurator} />}
+      <Configurator configurator={viewModel.configurator} />
       {viewModel.hints && <Hints hints={viewModel.hints} />}
       <div className="absolute bottom-4 right-4 flex gap-3">
         <UndoRedoControls

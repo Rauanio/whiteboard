@@ -47,6 +47,7 @@ type ViewModelCircleNode = {
   width: number;
   height: number;
   isSelected?: boolean;
+  configuration: NodeConfiguration;
   onClick?: (e: React.MouseEvent<SVGEllipseElement>) => void;
   onMouseDown?: (e: React.MouseEvent<SVGEllipseElement>) => void;
   onHandleMouseDown?: (e: React.MouseEvent<SVGElement>, dir: ResizeDirection) => void;
@@ -61,6 +62,7 @@ type ViewModelDiamondNode = {
   width: number;
   height: number;
   isSelected?: boolean;
+  configuration: NodeConfiguration;
   onClick?: (e: React.MouseEvent<SVGPolygonElement>) => void;
   onMouseDown?: (e: React.MouseEvent<SVGPolygonElement>) => void;
   onHandleMouseDown?: (e: React.MouseEvent<SVGElement>, dir: ResizeDirection) => void;
@@ -74,6 +76,7 @@ type ViewModelArrowNode = {
   end: Point;
   isSelected?: boolean;
   noPointerEvents?: boolean;
+  configuration: NodeConfiguration;
   onClick?: (e: React.MouseEvent<SVGPathElement>) => void;
   onMouseDown?: (e: React.MouseEvent<SVGPathElement>) => void;
   onMouseUp?: (e: React.MouseEvent<SVGPathElement>) => void;
@@ -86,6 +89,7 @@ type ViewModelFreeHandNode = {
   points: FreeHandPoints;
   isSelected?: boolean;
   noPointerEvents?: boolean;
+  configuration: NodeConfiguration;
   onClick?: (e: React.MouseEvent<SVGPathElement>) => void;
   onMouseDown?: (e: React.MouseEvent<SVGPathElement>) => void;
   onMouseUp?: (e: React.MouseEvent<SVGPathElement>) => void;
@@ -105,9 +109,8 @@ export interface ViewModel {
   selectionWindow?: Rect;
   configurator?: {
     type: ViewModelNode['type'];
-    actions: {
-      setStrokeStyle?: (stroke: 'solid' | 'dashed' | 'dotted') => void;
-    };
+    selectedNodesConfiguration?: ViewModelNode['configuration'];
+    actions: ViewModelConfiguratorActions;
   };
   windowPosition?: WindowPosition;
   hints?: ReactNode;
@@ -145,4 +148,13 @@ export interface ViewModel {
 export type ViewModelAction = {
   isActive?: boolean;
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+};
+
+export type ViewModelConfiguratorActions = {
+  setStrokeStyle: (stroke: 'solid' | 'dashed' | 'dotted') => void;
+  setStrokeWidth: (width: number) => void;
+  setStroke: (color: string) => void;
+  setBackground: (background: string) => void;
+  setEdges: (edge: 'sharp' | 'round') => void;
+  setOpacity: (opacity: number[]) => void;
 };

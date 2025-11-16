@@ -1,6 +1,6 @@
 import { type Point } from '../../../domain/point';
 import type { ViewModelProps } from '../../view-model';
-import type { ViewModel, ViewModelNode } from '../../view-model-type';
+import type { ViewModel } from '../../view-model-type';
 import { useDeleteSelectedNode } from './use-delete-selected-node';
 import { useGoToEditSticker } from './use-go-to-edit-sticker';
 import { useGoToSelectionWindow } from './use-go-to-selection-window';
@@ -8,6 +8,7 @@ import { useMouseDown } from './use-mouse-down';
 import { useSelection } from './use-selection';
 import { useGoToNodesDragging } from './use-go-to-nodes-dragging';
 import { useGoToNodesResizing } from './use-go-to-nodes-resizing';
+import { useConfigurator } from './use-configurator';
 import type { ResizeDirection } from '@/features/board/ui/resizable';
 
 export interface IdleViewState {
@@ -37,17 +38,8 @@ export const useIdleViewModel = (props: ViewModelProps) => {
   const goToSelectionWindow = useGoToSelectionWindow(props);
   const goToNodesDragging = useGoToNodesDragging(props);
   const goToNodesResizing = useGoToNodesResizing(props);
+  const configurator = useConfigurator(props);
   const mouseDown = useMouseDown(props);
-
-  const getConfiguratorType = (state: IdleViewState): ViewModelNode['type'] => {
-    const node = nodesModel.nodes.find((node) => state.selectedIds.has(node.id));
-
-    if (!node) {
-      return 'rectangle';
-    }
-
-    return node?.type;
-  };
 
   return (idleState: IdleViewState): ViewModel => ({
     nodes: nodesModel.nodes.map((node) => ({
@@ -64,7 +56,6 @@ export const useIdleViewModel = (props: ViewModelProps) => {
           return;
         }
 
-        console.log(Array.from(idleState.selectedIds));
         const clickResult = goToEditSticker.handleGoToEditSticker(idleState, node.id, e);
         if (clickResult.preventNext) return;
 
@@ -75,25 +66,11 @@ export const useIdleViewModel = (props: ViewModelProps) => {
       onMouseDown: (e) => mouseDown.handleOverlayMouseDown(idleState, e),
       onMouseUp: () => selection.handleOverlayMouseUp(idleState),
     },
-    configurator:
-      idleState.selectedIds.size > 0
-        ? {
-            type: getConfiguratorType(idleState),
-            actions: {
-              setStrokeStyle: (stroke) => {
-                const selectedIds = Array.from(idleState.selectedIds);
-                nodesModel.updateNodesConfiguration(selectedIds, (node) => {
-                  return {
-                    ...node,
-                    configuration: {
-                      stroke,
-                    },
-                  };
-                });
-              },
-            },
-          }
-        : undefined,
+    configurator: {
+      type: configurator.getConfiguratorType(idleState),
+      selectedNodesConfiguration: configurator.getNodesConfiguration(idleState),
+      actions: configurator.getConfiguratorActions(idleState),
+    },
     window: {
       onMouseMove: (e) => {
         goToSelectionWindow.handleWindowMouseMove(idleState, e);
