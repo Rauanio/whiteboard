@@ -1,5 +1,5 @@
 import { Button } from '@/shared/ui/kit/button';
-import { ArrowUpRight, CornerUpRight, Redo } from 'lucide-react';
+import { ArrowUpRight, CornerUpRight, Redo, Square, Squircle } from 'lucide-react';
 import type { ViewModel } from '../view-model/view-model-type';
 import { Slider } from '@/shared/ui/kit/slider';
 import {
@@ -7,6 +7,9 @@ import {
   DEFAULT_ELEMENT_STROKE_PICKS,
 } from '@/shared/common/colors';
 import { ColorPicker } from './color-picker';
+import { RadioSelection } from '@/shared/ui/radio-selection';
+import type { Edge, StrokeStyle } from '../domain/types';
+import { STROKE_WIDTH } from '@/shared/common/contants';
 
 export const Configurator = ({
   configurator,
@@ -21,14 +24,13 @@ export const Configurator = ({
     return null;
   }
 
-  const { stroke, background } = selectedNodesConfiguration;
-
-  console.log(DEFAULT_ELEMENT_STROKE_PICKS);
+  const { stroke, background, edge, strokeWidth, strokeStyle } =
+    selectedNodesConfiguration;
 
   return (
     <div className="absolute left-4 top-1/2 -translate-y-1/2 bg-white p-2 rounded-lg shadow-lg flex flex-col gap-3">
       {type === 'arrow' && (
-        <fieldset className="flex flex-col gap-1">
+        <fieldset className="space-y-1">
           <legend>Arrow type</legend>
           <div className="flex gap-1.5">
             <Button variant={'outline'} size={'icon'}>
@@ -62,84 +64,89 @@ export const Configurator = ({
         />
       </fieldset>
 
-      <fieldset className="flex flex-col gap-1">
-        <legend>Stroke style</legend>
+      <fieldset className="space-y-1">
+        <legend className="text-sm">Stroke style</legend>
         <div className="flex gap-1.5">
-          <Button
-            onClick={() => actions.setStrokeStyle('solid')}
-            variant={'outline'}
-            size={'icon'}
-          >
-            Solid
-          </Button>
-          <Button
-            onClick={() => actions.setStrokeStyle('dashed')}
-            variant={'outline'}
-            size={'icon'}
-          >
-            Dashed
-          </Button>
-          <Button
-            onClick={() => actions.setStrokeStyle('dotted')}
-            variant={'outline'}
-            size={'icon'}
-          >
-            Dotted
-          </Button>
+          <RadioSelection
+            group="strokeStyle"
+            onChange={(value) => actions.setStrokeStyle(value)}
+            options={[
+              {
+                icon: Square,
+                text: 'solid',
+                value: 'solid',
+              },
+              {
+                icon: Squircle,
+                text: 'dashed',
+                value: 'dashed',
+              },
+              {
+                icon: Squircle,
+                text: 'dotted',
+                value: 'dotted',
+              },
+            ]}
+            value={strokeStyle}
+          />
         </div>
       </fieldset>
 
-      <fieldset className="flex flex-col gap-1">
-        <legend>Stroke width</legend>
+      <fieldset className="space-y-1">
+        <legend className="text-sm">Stroke width</legend>
         <div className="flex gap-1.5">
-          <Button
-            onClick={() => actions.setStrokeWidth(1)}
-            variant={'outline'}
-            size={'icon'}
-          >
-            Thin
-          </Button>
-          <Button
-            onClick={() => actions.setStrokeWidth(3)}
-            variant={'outline'}
-            size={'icon'}
-          >
-            Bold
-          </Button>
-          <Button
-            onClick={() => actions.setStrokeWidth(5)}
-            variant={'outline'}
-            size={'icon'}
-          >
-            Extra bold
-          </Button>
+          <RadioSelection
+            group="strokeWidth"
+            onChange={(value) => actions.setStrokeWidth(value)}
+            options={[
+              {
+                icon: Square,
+                text: 'thin',
+                value: STROKE_WIDTH.thin,
+              },
+              {
+                icon: Squircle,
+                text: 'bold',
+                value: STROKE_WIDTH.bold,
+              },
+              {
+                icon: Squircle,
+                text: 'extraBold',
+                value: STROKE_WIDTH.extraBold,
+              },
+            ]}
+            value={strokeWidth}
+          />
         </div>
       </fieldset>
 
       {(type === 'rectangle' || type === 'diamond') && (
-        <fieldset className="flex flex-col gap-1">
-          <legend>Edges</legend>
+        <fieldset className="space-y-1">
+          <legend className="text-sm">Edges</legend>
           <div className="flex gap-1.5">
-            <Button
-              onClick={() => actions.setEdges('sharp')}
-              variant={'outline'}
-              size={'icon'}
-            >
-              Sharp
-            </Button>
-            <Button
-              onClick={() => actions.setEdges('round')}
-              variant={'outline'}
-              size={'icon'}
-            >
-              Round
-            </Button>
+            <RadioSelection<Edge>
+              group="edges"
+              onChange={(value) => actions.setEdges(value)}
+              options={[
+                {
+                  icon: Square,
+                  text: 'sharp',
+                  value: 'sharp',
+                },
+                {
+                  icon: Squircle,
+                  text: 'round',
+                  value: 'round',
+                },
+              ]}
+              value={edge}
+            />
           </div>
         </fieldset>
       )}
 
-      <fieldset className="flex flex-col gap-1">
-        <legend>Opacity</legend>
+      <fieldset className="space-y-1">
+        <legend className="text-sm">Opacity</legend>
         <Slider
           defaultValue={selectedNodesConfiguration.opacity}
           max={100}

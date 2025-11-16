@@ -12,8 +12,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/shared/ui/kit/dropdown-menu';
+import { DROPDOWN_ZOOM_STEPS, MAX_ZOOM, MIN_ZOOM, ZOOM_STEP } from '@/shared/common/contants';
 
-const dropdownItems = [50, 70, 100, 150, 200];
 
 export const ZoomControls = ({
   canvasRect,
@@ -25,7 +25,7 @@ export const ZoomControls = ({
   const [isFullscreen, setIsFullscreen] = useState(false);
   const zoomPercentage = Math.round(windowPositionModel.position.zoom * 100);
 
-  const clampZoom = (zoom: number) => Math.min(5, Math.max(0.1, zoom));
+  const clampZoom = (zoom: number) => Math.min(5, Math.max(ZOOM_STEP, zoom));
 
   const { position } = windowPositionModel;
 
@@ -85,7 +85,7 @@ export const ZoomControls = ({
 
   return (
     <div className="shadow-md bg-white p-1 flex items-center rounded-md">
-      <ControlButton disabled={zoomPercentage <= 10} onClick={onZoomOut}>
+      <ControlButton disabled={zoomPercentage <= MIN_ZOOM} onClick={onZoomOut}>
         <MinusIcon />
       </ControlButton>
       <DropdownMenu>
@@ -98,14 +98,14 @@ export const ZoomControls = ({
             {isFullscreen ? 'Exit' : 'Enter'} full screen
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          {dropdownItems.map((item) => (
+          {DROPDOWN_ZOOM_STEPS.map((item) => (
             <DropdownMenuItem onClick={() => zoom({ percentage: item })}>
               <ZoomIn /> {item}%
             </DropdownMenuItem>
           ))}
         </DropdownMenuContent>
       </DropdownMenu>
-      <ControlButton disabled={zoomPercentage >= 500} onClick={onZoomIn}>
+      <ControlButton disabled={zoomPercentage >= MAX_ZOOM} onClick={onZoomIn}>
         <PlusIcon />
       </ControlButton>
     </div>

@@ -35,7 +35,7 @@ interface ResizableDoubleProps extends ResizablePropsBase<'double'> {
 type ResizableProps = ResizableDefaultProps | ResizableDoubleProps;
 
 export const HANDLE_SIZE = 12;
-export const STROKE_WIDTH = 2;
+const STROKE_WIDTH = 2;
 
 export const Resizable = (props: ResizableProps) => {
   const { type, onHandleMouseDown } = props;

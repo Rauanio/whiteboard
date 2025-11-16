@@ -6,14 +6,15 @@ import {
   DEFAULT_ELEMENT_BACKGROUND_PICKS,
   DEFAULT_ELEMENT_STROKE_PICKS,
 } from '@/shared/common/colors';
+import type { Edge, StrokeStyle } from '../domain/types';
 
 export interface NodeConfiguration {
   stroke: string;
   background: string;
-  strokeStyle: 'solid' | 'dashed' | 'dotted';
+  strokeStyle: StrokeStyle
   strokeWidth: number;
   opacity: number[];
-  edge: 'sharp' | 'round';
+  edge: Edge
 }
 
 interface NodeBase {
