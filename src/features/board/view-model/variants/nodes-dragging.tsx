@@ -4,6 +4,7 @@ import type { NodeUpdatePosition } from '../../model/nodes';
 import type { ViewModelProps } from '../view-model';
 import type { ViewModel } from '../view-model-type';
 import { goToIdle } from './idle';
+import { useConfigurator } from './idle/use-configurator';
 
 export interface NodesDraggingViewState {
   type: 'nodes-dragging';
@@ -12,13 +13,10 @@ export interface NodesDraggingViewState {
   nodesToDrag: Set<string>;
 }
 
-export const useNodesDraggingViewModel = ({
-  nodesModel,
-  canvasRect,
-  setViewState,
-  windowPositionModel,
-  lockActions,
-}: ViewModelProps) => {
+export const useNodesDraggingViewModel = (props: ViewModelProps) => {
+  const { canvasRect, lockActions, nodesModel, setViewState, windowPositionModel } =
+    props;
+
   const getNodes = (state: NodesDraggingViewState) => {
     return nodesModel.nodes.map((node) => {
       if (state.nodesToDrag.has(node.id)) {
@@ -56,9 +54,10 @@ export const useNodesDraggingViewModel = ({
     });
   };
 
+  const configurator = useConfigurator(props);
+
   return (state: NodesDraggingViewState): ViewModel => {
     const nodes = getNodes(state);
-    console.log(state.nodesToDrag);
 
     return {
       nodes: nodes,
@@ -122,6 +121,11 @@ export const useNodesDraggingViewModel = ({
             })
           );
         },
+      },
+      configurator: {
+        type: configurator.getConfiguratorType(state.nodesToDrag),
+        selectedNodesConfiguration: configurator.getNodesConfiguration(state.nodesToDrag),
+        actions: configurator.getConfiguratorActions(state.nodesToDrag),
       },
       actions: {
         idleState: {

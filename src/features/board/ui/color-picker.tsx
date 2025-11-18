@@ -10,8 +10,6 @@ interface ColorPickerProps {
 }
 
 export const ColorPicker = ({ activeColor, onChange, topPicks }: ColorPickerProps) => {
-  console.log(topPicks);
-
   return (
     <div className="flex items-center gap-2">
       <div className="flex gap-1.5">

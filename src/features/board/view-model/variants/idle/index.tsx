@@ -67,9 +67,11 @@ export const useIdleViewModel = (props: ViewModelProps) => {
       onMouseUp: () => selection.handleOverlayMouseUp(idleState),
     },
     configurator: {
-      type: configurator.getConfiguratorType(idleState),
-      selectedNodesConfiguration: configurator.getNodesConfiguration(idleState),
-      actions: configurator.getConfiguratorActions(idleState),
+      type: configurator.getConfiguratorType(idleState.selectedIds),
+      selectedNodesConfiguration: configurator.getNodesConfiguration(
+        idleState.selectedIds
+      ),
+      actions: configurator.getConfiguratorActions(idleState.selectedIds),
     },
     window: {
       onMouseMove: (e) => {

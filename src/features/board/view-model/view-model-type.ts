@@ -5,6 +5,7 @@ import type { FreeHandPoints } from '../domain/svg';
 import type { WindowPosition } from '../model/window-position';
 import type { ResizeDirection } from '../ui/resizable';
 import type { NodeConfiguration } from '../model/nodes';
+import type { Edge, Layer, StrokeStyle, StrokeWidth } from '../domain/types';
 
 interface ViewModelStickerNode {
   id: string;
@@ -151,10 +152,14 @@ export type ViewModelAction = {
 };
 
 export type ViewModelConfiguratorActions = {
-  setStrokeStyle: (stroke: 'solid' | 'dashed' | 'dotted') => void;
-  setStrokeWidth: (width: number) => void;
+  setStrokeStyle: (stroke: StrokeStyle) => void;
+  setStrokeWidth: (width: StrokeWidth) => void;
   setStroke: (color: string) => void;
   setBackground: (background: string) => void;
-  setEdges: (edge: 'sharp' | 'round') => void;
+  setEdges: (edge: Edge) => void;
   setOpacity: (opacity: number[]) => void;
+  setLayer: (layer: Layer) => void;
+
+  duplicateNode: () => void;
+  deleteNode: () => void;
 };

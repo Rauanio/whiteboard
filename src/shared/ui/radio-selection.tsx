@@ -54,7 +54,7 @@ export const RadioSelection = <T,>(
             onChange={() => props.onChange(option.value)}
             checked={props.value === option.value}
           />
-          <option.icon />
+          {<option.icon />}
         </label>
       )
     )}

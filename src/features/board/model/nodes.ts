@@ -6,15 +6,16 @@ import {
   DEFAULT_ELEMENT_BACKGROUND_PICKS,
   DEFAULT_ELEMENT_STROKE_PICKS,
 } from '@/shared/common/colors';
-import type { Edge, StrokeStyle } from '../domain/types';
+import type { Edge, Layer, StrokeStyle, StrokeWidth } from '../domain/types';
 
 export interface NodeConfiguration {
   stroke: string;
   background: string;
-  strokeStyle: StrokeStyle
-  strokeWidth: number;
+  strokeStyle: StrokeStyle;
+  strokeWidth: StrokeWidth;
   opacity: number[];
-  edge: Edge
+  edge: Edge;
+  layer: Layer;
 }
 
 interface NodeBase {
@@ -75,13 +76,14 @@ export interface NodeUpdateResizing {
   type?: 'start' | 'end';
 }
 
-const configuration: NodeConfiguration = {
+export const configuration: NodeConfiguration = {
   strokeStyle: 'solid',
-  strokeWidth: 2,
+  strokeWidth: 'thin',
   stroke: DEFAULT_ELEMENT_STROKE_PICKS[0],
   background: DEFAULT_ELEMENT_BACKGROUND_PICKS[1],
   opacity: [100],
   edge: 'round',
+  layer: 'back',
 };
 
 export const useNodes = () => {
@@ -134,7 +136,10 @@ export const useNodes = () => {
       {
         id: crypto.randomUUID(),
         type: 'sticker',
-        configuration,
+        configuration: {
+          ...configuration,
+          background: '#FFEA00',
+        },
         ...data,
       },
     ]);
@@ -329,6 +334,28 @@ export const useNodes = () => {
     );
   };
 
+  const duplicateNode = (ids: string[]) => {
+    setNodes((prev) => {
+      const toDuplicate = prev.filter((n) => ids.includes(n.id));
+
+      const duplicated = toDuplicate.map((node) => {
+        if (!(node.type === 'arrow' || node.type === 'free-hand')) {
+          return {
+            ...node,
+            id: crypto.randomUUID(),
+            x: node.x + 10,
+            y: node.y + 10,
+          };
+        }
+        return node;
+      });
+
+      return [...prev, ...duplicated];
+    });
+  };
+
+  console.log(nodes);
+
   return {
     nodes,
     addStickerNode,
@@ -342,6 +369,7 @@ export const useNodes = () => {
     updateNodesConfiguration,
     updateNodesPositions,
     resizeNodes,
+    duplicateNode,
     undo,
     redo,
     canRedo,

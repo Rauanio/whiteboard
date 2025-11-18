@@ -1,6 +1,8 @@
 import { useEffect, useRef, type Ref } from 'react';
 import { Selectable } from '../selectable';
 import type { ResizeDirection } from '../resizable';
+import type { NodeConfiguration } from '../../model/nodes';
+import clsx from 'clsx';
 
 export function Sticker({
   id,
@@ -16,6 +18,7 @@ export function Sticker({
   onTextChange,
   onMouseDown,
   onMouseUp,
+  configuration,
   onHandleMouseDown,
 }: {
   id: string;
@@ -25,6 +28,7 @@ export function Sticker({
   width: number;
   height: number;
   ref: Ref<SVGRectElement>;
+  configuration: NodeConfiguration;
   isSelected?: boolean;
   isEditing?: boolean;
   onTextChange?: (text: string) => void;
@@ -33,9 +37,13 @@ export function Sticker({
   onHandleMouseDown?: (e: React.MouseEvent<SVGElement>, dir: ResizeDirection) => void;
   onMouseUp?: (e: React.MouseEvent<SVGRectElement>) => void;
 }) {
+  const { background, opacity, layer } = configuration;
   return (
     <svg
-      className="absolute left-0 top-0 pointer-events-none overflow-visible z-1"
+      className={clsx(
+        'absolute left-0 top-0 pointer-events-none overflow-visible',
+        layer === 'front' ? 'z-10' : 'z-0'
+      )}
       style={{ touchAction: 'none' }}
     >
       <g>
@@ -57,7 +65,8 @@ export function Sticker({
           width={width}
           height={height}
           onMouseDown={onMouseDown}
-          fill="#FFEA00"
+          fill={background}
+          opacity={opacity[0] / 100}
           rx={4}
           onMouseUp={onMouseUp}
           onClick={onClick}

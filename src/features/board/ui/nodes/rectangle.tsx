@@ -3,6 +3,8 @@ import type { Ref } from 'react';
 import { Selectable } from '../selectable';
 import type { ResizeDirection } from '../resizable';
 import type { NodeConfiguration } from '../../model/nodes';
+import { getStrokeStyle, getStrokeWidth } from '../../domain/svg';
+import clsx from 'clsx';
 
 export function Rectangle({
   height,
@@ -30,10 +32,16 @@ export function Rectangle({
   const cx = x + width / 2;
   const cy = y + height / 2;
 
-  const { background, opacity, stroke, strokeWidth, edge } = configuration;
+  const { background, opacity, stroke, strokeWidth, edge, strokeStyle, layer } =
+    configuration;
 
   return (
-    <svg className="absolute left-0 top-0 pointer-events-none overflow-visible">
+    <svg
+      className={clsx(
+        'absolute left-0 top-0 pointer-events-none overflow-visible',
+        layer === 'front' ? 'z-10' : 'z-0'
+      )}
+    >
       <g transform={`rotate(0 ${cx} ${cy})`}>
         {isSelected && (
           <Selectable
@@ -54,9 +62,10 @@ export function Rectangle({
           height={height}
           rx={edge === 'round' ? 12 : 0}
           fill={background}
-          fillOpacity={opacity[0] / 100}
+          opacity={opacity[0] / 100}
           stroke={stroke}
-          strokeWidth={strokeWidth}
+          strokeWidth={getStrokeWidth(strokeWidth)}
+          stroke-dasharray={getStrokeStyle(strokeStyle)}
           strokeLinecap="round"
           strokeLinejoin="round"
           onMouseDown={onMouseDown}

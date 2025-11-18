@@ -1,6 +1,7 @@
 import { distanceFromPoints, type Point } from '../../domain/point';
 import { createRectFromPoints } from '../../domain/rect';
 import { pointOnScreenToCanvas } from '../../domain/screen-to-canvas';
+import { configuration } from '../../model/nodes';
 import type { ViewModelProps } from '../view-model';
 import type { ViewModel } from '../view-model-type';
 import { goToIdle } from './idle';
@@ -32,6 +33,7 @@ export const useAddCircleViewModel = ({
             y: rect.y,
             width: rect?.width,
             height: rect?.height,
+            configuration: configuration,
           },
         ]
       : nodesModel.nodes;

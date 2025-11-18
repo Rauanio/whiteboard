@@ -1,9 +1,11 @@
+import { STROKE_WIDTH } from '@/shared/common/contants';
 import {
   HANDLE_SIZE,
   type DefaultResizeDirection,
   type ArrowResizeDirection,
 } from '../ui/resizable';
 import type { Point } from './point';
+import type { StrokeStyle, StrokeWidth } from './types';
 
 export type FreeHandPoints = (number[] | { x: number; y: number; pressure?: number })[];
 
@@ -86,3 +88,27 @@ export function flipDirection(
 
   return direction;
 }
+
+export const getStrokeStyle = (style: StrokeStyle) => {
+  switch (style) {
+    case 'dashed':
+      return '8';
+    case 'dotted':
+      return '4 4';
+    default:
+      return '0';
+  }
+};
+
+export const getStrokeWidth = (width: StrokeWidth) => {
+  switch (width) {
+    case 'thin':
+      return STROKE_WIDTH.thin;
+    case 'bold':
+      return STROKE_WIDTH.bold;
+    case 'extra-bold':
+      return STROKE_WIDTH.extraBold;
+    default:
+      throw new Error('stroke width is not found');
+  }
+};

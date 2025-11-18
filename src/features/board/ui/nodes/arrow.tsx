@@ -10,7 +10,7 @@ export const Arrow = ({
   ref,
   isSelected,
   noPointerEvents,
-  configuration,
+  // configuration,
   onClick,
   onMouseDown,
   onHandleMouseDown,

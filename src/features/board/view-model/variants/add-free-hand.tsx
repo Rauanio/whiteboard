@@ -1,5 +1,6 @@
 import { pointOnScreenToCanvas } from '../../domain/screen-to-canvas';
 import type { FreeHandPoints } from '../../domain/svg';
+import { configuration } from '../../model/nodes';
 import type { ViewModelProps } from '../view-model';
 import type { ViewModel } from '../view-model-type';
 import { goToIdle } from './idle';
@@ -24,6 +25,7 @@ export const useAddFreeHandViewModel = ({
             type: 'free-hand' as const,
             points: state.points,
             noPointerEvents: true,
+            configuration: configuration,
           },
         ]
       : nodesModel.nodes;

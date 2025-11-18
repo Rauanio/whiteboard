@@ -3,6 +3,8 @@ import type { Ref } from 'react';
 import { Selectable } from '../selectable';
 import type { ResizeDirection } from '../resizable';
 import type { NodeConfiguration } from '../../model/nodes';
+import { getStrokeStyle, getStrokeWidth } from '../../domain/svg';
+import clsx from 'clsx';
 
 export function Circle({
   height,
@@ -27,7 +29,7 @@ export function Circle({
   onHandleMouseDown?: (e: React.MouseEvent<SVGElement>, dir: ResizeDirection) => void;
   onMouseUp?: (e: React.MouseEvent<SVGEllipseElement>) => void;
 }) {
-  const { background, opacity, stroke, strokeWidth } = configuration;
+  const { background, opacity, stroke, strokeWidth, strokeStyle, layer } = configuration;
 
   const cx = x + width / 2;
   const cy = y + height / 2;
@@ -35,7 +37,12 @@ export function Circle({
   const ry = height / 2;
 
   return (
-    <svg className="absolute left-0 top-0 pointer-events-none overflow-visible">
+    <svg
+      className={clsx(
+        'absolute left-0 top-0 pointer-events-none overflow-visible',
+        layer === 'front' ? 'z-10' : 'z-0'
+      )}
+    >
       <g>
         {isSelected && (
           <Selectable
@@ -54,9 +61,10 @@ export function Circle({
           cy={cy}
           cx={cx}
           fill={background}
+          opacity={opacity[0] / 100}
           stroke={stroke}
-          fillOpacity={opacity[0] / 100}
-          strokeWidth={strokeWidth}
+          strokeWidth={getStrokeWidth(strokeWidth)}
+          stroke-dasharray={getStrokeStyle(strokeStyle)}
           onMouseUp={onMouseUp}
           onClick={onClick}
           onMouseDown={onMouseDown}

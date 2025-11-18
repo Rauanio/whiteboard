@@ -1,33 +1,34 @@
 import type { ViewModelProps } from '../../view-model';
 import type { ViewModelConfiguratorActions, ViewModelNode } from '../../view-model-type';
-import type { IdleViewState } from '../idle';
 
 export const useConfigurator = ({ nodesModel }: ViewModelProps) => {
-  const getSelectedNodes = (state: IdleViewState): ViewModelNode | undefined => {
-    if (state.selectedIds.size > 0) {
-      const node = nodesModel.nodes.find((node) => state.selectedIds.has(node.id));
+  const getSelectedNodes = (selectedIds: Set<string>): ViewModelNode | undefined => {
+    if (selectedIds.size > 0) {
+      const node = nodesModel.nodes.find((node) => selectedIds.has(node.id));
       return node;
     }
   };
 
-  const getConfiguratorType = (state: IdleViewState) => {
-    const node = getSelectedNodes(state);
+  const getConfiguratorType = (selectedIds: Set<string>) => {
+    const node = getSelectedNodes(selectedIds);
 
     return node ? node.type : 'rectangle';
   };
 
-  const getNodesConfiguration = (state: IdleViewState) => {
-    const node = getSelectedNodes(state);
+  const getNodesConfiguration = (selectedIds: Set<string>) => {
+    const node = getSelectedNodes(selectedIds);
 
     return node?.configuration;
   };
 
-  const getConfiguratorActions = (state: IdleViewState): ViewModelConfiguratorActions => {
-    const selectedIds = Array.from(state.selectedIds);
+  const getConfiguratorActions = (
+    selectedIds: Set<string>
+  ): ViewModelConfiguratorActions => {
+    const ids = Array.from(selectedIds);
 
     return {
       setStrokeStyle: (strokeStyle) => {
-        nodesModel.updateNodesConfiguration(selectedIds, (node) => {
+        nodesModel.updateNodesConfiguration(ids, (node) => {
           return {
             ...node,
             configuration: {
@@ -38,7 +39,7 @@ export const useConfigurator = ({ nodesModel }: ViewModelProps) => {
         });
       },
       setStrokeWidth: (strokeWidth) => {
-        nodesModel.updateNodesConfiguration(selectedIds, (node) => {
+        nodesModel.updateNodesConfiguration(ids, (node) => {
           return {
             ...node,
             configuration: {
@@ -49,7 +50,7 @@ export const useConfigurator = ({ nodesModel }: ViewModelProps) => {
         });
       },
       setStroke: (stroke) => {
-        nodesModel.updateNodesConfiguration(selectedIds, (node) => {
+        nodesModel.updateNodesConfiguration(ids, (node) => {
           return {
             ...node,
             configuration: {
@@ -60,7 +61,7 @@ export const useConfigurator = ({ nodesModel }: ViewModelProps) => {
         });
       },
       setOpacity: (opacity) => {
-        nodesModel.updateNodesConfiguration(selectedIds, (node) => {
+        nodesModel.updateNodesConfiguration(ids, (node) => {
           return {
             ...node,
             configuration: {
@@ -71,7 +72,7 @@ export const useConfigurator = ({ nodesModel }: ViewModelProps) => {
         });
       },
       setBackground: (background) => {
-        nodesModel.updateNodesConfiguration(selectedIds, (node) => {
+        nodesModel.updateNodesConfiguration(ids, (node) => {
           return {
             ...node,
             configuration: {
@@ -82,7 +83,7 @@ export const useConfigurator = ({ nodesModel }: ViewModelProps) => {
         });
       },
       setEdges: (edge) => {
-        nodesModel.updateNodesConfiguration(selectedIds, (node) => {
+        nodesModel.updateNodesConfiguration(ids, (node) => {
           return {
             ...node,
             configuration: {
@@ -91,6 +92,22 @@ export const useConfigurator = ({ nodesModel }: ViewModelProps) => {
             },
           };
         });
+      },
+      setLayer: (layer) => {
+        nodesModel.updateNodesConfiguration(ids, (node) => {
+          return {
+            ...node,
+            configuration: {
+              ...node.configuration,
+              layer,
+            },
+          };
+        });
+      },
+      deleteNode: () => nodesModel.deleteNodes(ids),
+
+      duplicateNode: () => {
+        nodesModel.duplicateNode(ids);
       },
     };
   };
